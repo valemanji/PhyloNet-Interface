@@ -24,94 +24,84 @@ def resource_path(relative_path):
     return os.path.join(os.path.abspath("."), relative_path)
 
 
-class Main(QDialog):
+class Main(QMainWindow):
     def __init__(self):
         super(Main, self).__init__()
-        SM = SubMain()
-        self.setWindowTitle("Phylonet") 
-        self.setWindowIcon(QIcon("logo.png"))
-        flags = QtCore.Qt.WindowFlags(QtCore.Qt.CustomizeWindowHint | QtCore.Qt.WindowCloseButtonHint 
-                    | QtCore.Qt.WindowMaximizeButtonHint | QtCore.Qt.WindowMinimizeButtonHint)
-        self.setWindowFlags(flags)
-
-        mainLayout = QVBoxLayout()
-        mainLayout.addWidget(SM)
-
-        self.setLayout(mainLayout)
-
-
-class SubMain(QMainWindow):
-    def __init__(self):
-        super(SubMain, self).__init__()
         self.initUI()
 
     def initUI(self):
         """
         Initialize GUI.
         """
+        self.setWindowTitle("Phylonet") 
+        self.setWindowIcon(QIcon("logo.png"))
+        flags = QtCore.Qt.WindowFlags(QtCore.Qt.CustomizeWindowHint | QtCore.Qt.WindowCloseButtonHint 
+                    | QtCore.Qt.WindowMaximizeButtonHint | QtCore.Qt.WindowMinimizeButtonHint)
+        #flags =  QtCore.Qt.WindowFlags(QtCore.Qt.FramelessWindowHint | QtCore.Qt.CustomizeWindowHint)
+        self.setWindowFlags(flags)
+
         wid = QWidget()
         self.setCentralWidget(wid)
+        self.setContentsMargins(100, 0, 100, 80)
+        ico = QIcon("info.svg")
+
+        infoButton = QPushButton(self)
+
+        #infoButton.setObjectName("infoButton")
+        infoButton.clicked.connect(self.aboutMessage)
+        infoButton.setIcon(ico)
+        infoButton.setFixedSize(48, 48)
+        infoButton.setIconSize(infoButton.size())
+
+        infoButton.setStyleSheet("border: none;") 
 
         # Buttons of two options
         generateBtn = QPushButton(
             "Generate input NEXUS file for PhyloNet", self)
+        generateBtn.setObjectName("inputBtn")
         postProcessBtn = QPushButton(
             "Display results of PhyloNet commands", self)
+        postProcessBtn.setObjectName("outputBtn")
 
         generateBtn.clicked.connect(self.openModule)
         postProcessBtn.clicked.connect(self.openPostProcess)
 
-        # Image and Title
-        image = QLabel(self)
-        pix = QPixmap(resource_path("PhyloNet-Interface/logo.png"))
-        image.setPixmap(pix)
-        self.resize(20, 10)
-        image.setObjectName("image")
 
-        phylonetLabel = QLabel("PhyloNet")
-        phylonetLabel.setObjectName("phylonetLabel")
-
-        # Separation line
-        line = QFrame(self)
-        line.setFrameShape(QFrame.HLine)
-        line.setFrameShadow(QFrame.Sunken)
-        line.setObjectName("line")
-
-        # Layouts
-        # Top level logo and title.
-        top = QHBoxLayout()
-        top.addStretch()
-        top.addWidget(image)
-        top.addWidget(phylonetLabel)
-        top.addStretch()
-
-        # Frame container for the top level layout
-        topFrame = QFrame()
-        topFrame.setObjectName("topFrame")
-        topFrame.setLayout(top)
-
-        # Middle level question
+        # Question
         questionLabel = QLabel()
         questionLabel.setObjectName("questionLabel")
         questionLabel.setText(
-            "Welcome to PhyloNet. What would you like to do?")
+            "What would you like to do?")
 
         # Bottom level options
-        hbox = QHBoxLayout()
-        hbox.addWidget(generateBtn)
-        hbox.addWidget(postProcessBtn)
+        #this is deceptive, it's no longer horizontal
+        hbox = QVBoxLayout()
+        hbox.addWidget(generateBtn, alignment=QtCore.Qt.AlignCenter)
+        hbox.addWidget(postProcessBtn, alignment=QtCore.Qt.AlignCenter)
 
         # Main vertical layout.
         vbox = QVBoxLayout()
-        vbox.addWidget(getInfoButton(self))
-        vbox.addWidget(topFrame)
-        vbox.addWidget(line)
+        #info button gotta go
+        #vbox.addWidget(getInfoButton(self))
+        vbox.addWidget(infoButton, alignment=QtCore.Qt.AlignRight)
         vbox.addWidget(questionLabel)
         vbox.addLayout(hbox)
         wid.setLayout(vbox)
 
-        vbox.setContentsMargins(50, 10, 50, 10)
+        #vbox.setContentsMargins(50, 80, 50, 50)
 
+        # menubar.setNativeMenuBar(False)
+        #self.setWindowTitle('PhyloNetCompanion')
+        #self.setWindowIcon(QIcon(resource_path("logo.png")))
+
+        #size fluidity
+        #sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Expanding)
+        #sizePolicy.setHorizontalStretch(1)
+        #sizePolicy.setVerticalStretch(1)
+        #sizePolicy.setHeightForWidth(self.sizePolicy().hasHeightForWidth())
+        #self.setSizePolicy(sizePolicy)
+
+    
     def link(self, linkStr):
         """
         Open the website of PhyloNet if user clicks on the hyperlink.
@@ -144,10 +134,10 @@ class SubMain(QMainWindow):
         
         hyperlink = QLabel()
         hyperlink.setText('For more details related to this group please visit '
-                          '<a href="http://bioinfo.cs.rice.edu" style="color: #55ddff;">'
+                          '<a href="http://bioinfo.cs.rice.edu">'
                           'http://bioinfo.cs.rice.edu</a>.')
         hyperlink.linkActivated.connect(self.link)
-        hyperlink.setStyleSheet("padding: 10px 100px 80px 100px ;")
+        hyperlink.setStyleSheet("padding: 10px 100px 80px 100px;")
 
         buttonBox = QDialogButtonBox(QDialogButtonBox.Ok)
         buttonBox.clicked.connect(msg.accept)
@@ -161,13 +151,13 @@ class SubMain(QMainWindow):
         self.nexGenerator = module.launcher.Launcher()
         self.nexGenerator.show()
         #Closes main window so its cleaner for user
-        self.window().setVisible(False)
+        #self.window().setVisible(False)
 
     def openPostProcess(self):
         self.outputSummarizer = PostProcessingModule.menu.MenuPage()
         self.outputSummarizer.show()
         #same as above
-        self.window().setVisible(False)
+        #self.window().setVisible(False)
 
 
 if __name__ == '__main__':

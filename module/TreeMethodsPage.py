@@ -62,9 +62,6 @@ class TreeMethodsPage(QWizardPage):
         self.methods3.toggled.connect(self.onChecked)
         self.methods4.toggled.connect(self.onChecked)
 
-        # Launch button
-      #  launchBtn = QPushButton("Launch", self)
-      #  launchBtn.clicked.connect(self.launch)
 
         # Link to PhyloNet documentation page
         hyperlink = QLabel()
@@ -82,7 +79,7 @@ class TreeMethodsPage(QWizardPage):
         vbox.addWidget(self.methods2)
         vbox.addWidget(self.methods3)
         vbox.addWidget(self.methods4)
-      #  vbox.addWidget(launchBtn)
+
         self.setLayout(vbox)
 
         vbox.setContentsMargins(50, 10, 50, 10)
@@ -125,24 +122,6 @@ class TreeMethodsPage(QWizardPage):
         Open the website of PhyloNet if user clicks on the hyperlink.
         """
         QDesktopServices.openUrl(QtCore.QUrl(linkStr))
-
-  #  def launch(self):
-  #      if str(self.methods.currentText()) == "InferNetwork_MP (Parsimony)":
-  #          self.networkMP = NetworkMP.NetworkMPPage()
-  #          self.networkMP.show()
-  #          self.close()
-  #      elif str(self.methods.currentText()) == "InferNetwork_ML (Likelihood)":
-  #          self.networkML = NetworkML.NetworkMLPage()
-  #          self.networkML.show()
-  #          self.close()
-  #      elif str(self.methods.currentText()) == "InferNetwork_MPL (Pseudo likelihood)":
-  #          self.networkMPL = NetworkMPL.NetworkMPLPage()
-  #          self.networkMPL.show()
-  #          self.close()
-  #      elif str(self.methods.currentText()) == "MCMC_GT (Bayesian)":
-  #          self.MCMCGT = MCMCGT.MCMCGTPage()
-  #          self.MCMCGT.show()
-  #          self.close()
 
 
 if __name__ == '__main__':

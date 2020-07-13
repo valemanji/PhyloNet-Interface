@@ -46,8 +46,13 @@ class Launcher(QtWidgets.QWizard):
     Page_NetworkMP4 = 11
     Page_NetworkML = 12
     Page_NetworkML2 = 13
-    Page_NetworkMPL = 14
-    Page_MCMCGT = 15
+    Page_NetworkML3 = 14
+    Page_NetworkMPL = 15
+    Page_NetworkMPL2 = 16
+    Page_NetworkMPL3 = 17
+    Page_MCMCGT = 18
+    Page_MCMCGT2 = 19
+    Page_MCMCGT3 = 20
 
     def __init__(self):
         super(Launcher, self).__init__()
@@ -67,8 +72,13 @@ class Launcher(QtWidgets.QWizard):
         self.NetworkMP4 = NetworkMP.NetworkMPPage4()
         self.NetworkML = NetworkML.NetworkMLPage()
         self.NetworkML2 = NetworkML.NetworkMLPage2()
+        self.NetworkML3 = NetworkML.NetworkMLPage3()
         self.NetworkMPL = NetworkMPL.NetworkMPLPage()
+        self.NetworkMPL2 = NetworkMPL.NetworkMPLPage2()
+        self.NetworkMPL3 = NetworkMPL.NetworkMPLPage3()
         self.MCMCGT = MCMCGT.MCMCGTPage()
+        self.MCMCGT2 = MCMCGT.MCMCGTPage2()
+        self.MCMCGT3 = MCMCGT.MCMCGTPage3()
 
         self.setPage(self.Page_Intro, self.Intro)
         self.setPage(self.Page_DirectInf, self.DirectInf)
@@ -83,28 +93,26 @@ class Launcher(QtWidgets.QWizard):
         self.setPage(self.Page_MCMCGT, self.MCMCGT)
         self.setPage(self.Page_NetworkMP2, self.NetworkMP2)
         self.setPage(self.Page_NetworkML2, self.NetworkML2)
+        self.setPage(self.Page_NetworkMPL2, self.NetworkMPL2)
+        self.setPage(self.Page_NetworkML3, self.NetworkML3)
         self.setPage(self.Page_NetworkMP3, self.NetworkMP3)
+        self.setPage(self.Page_NetworkMPL3, self.NetworkMPL3)
         self.setPage(self.Page_NetworkMP4, self.NetworkMP4)
-
+        self.setPage(self.Page_MCMCGT2, self.MCMCGT2)
+        self.setPage(self.Page_MCMCGT3, self.MCMCGT3)
         self.initUI()
-
-       # scrollArea = QtWidgets.QScrollArea()
-       # scrollArea.setWidget(self.DirectInf)
-       # scrollArea.setWidgetResizable(True)
-       # scrollArea.setMinimumWidth(695)
-       # scrollArea.setMinimumHeight(750)
 
     def initUI(self):
         """
-
          GUI.
         """
-       # wid = QtWidgets.QWidget()
-       # self.setCentralWidget(wid)
+        #set window title and label
         self.setWindowTitle("Phylonet") 
-        self.setWindowIcon(QIcon("logo.png"))
+        self.setWindowIcon(QIcon("module/logo.png"))
+        #set maximize and minimize options
         flags = QtCore.Qt.WindowFlags(QtCore.Qt.CustomizeWindowHint | QtCore.Qt.WindowCloseButtonHint 
                     | QtCore.Qt.WindowMaximizeButtonHint | QtCore.Qt.WindowMinimizeButtonHint)
+        #flags = QtCore.Qt.FramelessWindowHint
         self.setWindowFlags(flags)
         self.setModal(1)
 
@@ -141,10 +149,20 @@ class Launcher(QtWidgets.QWizard):
             return self.Page_NetworkMP2
         elif id == Launcher.Page_NetworkML:
             return self.Page_NetworkML2
+        elif id == Launcher.Page_NetworkML2:
+            return self.Page_NetworkML3
         elif id == Launcher.Page_NetworkMP2:
             return self.Page_NetworkMP3
         elif id == Launcher.Page_NetworkMP3:
             return self.Page_NetworkMP4
+        elif id == Launcher.Page_NetworkMPL:
+            return self.Page_NetworkMPL2
+        elif id == Launcher.Page_NetworkMPL2:
+            return self.Page_NetworkMPL3
+        elif id == Launcher.Page_MCMCGT:
+            return self.Page_MCMCGT2
+        elif id == Launcher.Page_MCMCGT2:
+            return self.Page_MCMCGT3
         else:
             return -1
 
@@ -176,31 +194,20 @@ class IntroPage(QtWidgets.QWizardPage):
         self.inputOption2.toggled.connect(self.onChecked)
         self.inputOption3.toggled.connect(self.onChecked)
 
-      #  self.alignBox.setFont(checkBoxFont)
-      #  self.biAllelicBox.setFont(checkBoxFont)  # Font of two checkboxes.
-
-        # OK and Cancel buttons
-      #  buttonBox = QtWidgets.QDialogButtonBox(QtWidgets.QDialogButtonBox.Ok | QtWidgets.QDialogButtonBox.Cancel)
-      #  buttonBox.button(QtWidgets.QDialogButtonBox.Ok).setDefault(True)
-
-      #  buttonBox.button(QtWidgets.QDialogButtonBox.Cancel).clicked.connect(self.close)
-      #  buttonBox.button(QtWidgets.QDialogButtonBox.Ok).clicked.connect(self.okClicked)
-
         # Layouts
         # Main vertical layout.
         vbox = QtWidgets.QVBoxLayout()
         vbox.setObjectName("vbox")
+        vbox.setSpacing(30)
 
-        vbox.addWidget(getInfoButton(self))
+        #info button gotta go
+        #vbox.addWidget(getInfoButton(self))
         vbox.addWidget(questionLabel)
-        vbox.addWidget(self.inputOption1)
-        vbox.addWidget(self.inputOption2)
-        vbox.addWidget(self.inputOption3)
+        vbox.addWidget(self.inputOption1, alignment=QtCore.Qt.AlignCenter)
+        vbox.addWidget(self.inputOption2, alignment=QtCore.Qt.AlignCenter)
+        vbox.addWidget(self.inputOption3, alignment=QtCore.Qt.AlignCenter)
 
         self.setLayout(vbox)
-
-        self.setWindowTitle('PhyloNetNEXGenerator')
-        self.setWindowIcon(QtGui.QIcon(resource_path("logo.png")))
 
     def onChecked(self):
         """
@@ -208,22 +215,10 @@ class IntroPage(QtWidgets.QWizardPage):
         """
         self.invisButton.setCheckState(True)
 
-    def link(self, linkStr):
-        """
-        Open the website of PhyloNet if user clicks on the hyperlink.
-        """
-        QDesktopServices.openUrl(QtCore.QUrl(linkStr))
-
     def aboutMessage(self):
-        msg = QDialog()
-        msg.setWindowTitle("Phylonet") 
-        msg.setWindowIcon(QIcon("logo.png"))
-        flags = QtCore.Qt.WindowFlags(QtCore.Qt.CustomizeWindowHint | QtCore.Qt.WindowCloseButtonHint )
-        msg.setWindowFlags(flags)
-        msg.setObjectName("aboutMessage")
-
-        vbox = QVBoxLayout()
-        text = QLabel("PhyloNet is a tool designed mainly for analyzing, "
+        msg = QMessageBox()
+        msg.setIcon(QMessageBox.Information)
+        msg.setText("PhyloNet is a tool designed mainly for analyzing, "
                     "reconstructing, and evaluating reticulate "
                     "(or non-treelike) evolutionary relationships, "
                     "generally known as phylogenetic networks. Various "
@@ -233,24 +228,15 @@ class IntroPage(QtWidgets.QWizardPage):
                     "phylogenetic tree analysis. PhyloNet is released under "
                     "the GNU General Public License. \n\nPhyloNet is designed, "
                     "implemented, and maintained by Rice's BioInformatics Group, "
-                    "which is lead by Professor Luay Nakhleh (nakhleh@cs.rice.edu). ")
+                    "which is lead by Professor Luay Nakhleh (nakhleh@cs.rice.edu). "
+                    "For more details related to this group please visit "
+                    "http://bioinfo.cs.rice.edu.")
+        font = QFont()
+        font.setPointSize(13)
+        font.setFamily("Times New Roman")
+        font.setBold(False)
 
-        text.setWordWrap(True)
-        text.setStyleSheet("padding: 60px 100px 10px 100px;")
-        
-        hyperlink = QLabel()
-        hyperlink.setText('For more details related to this group please visit '
-                          '<a href="http://bioinfo.cs.rice.edu" style="color: #55ddff;">'
-                          'http://bioinfo.cs.rice.edu</a>.')
-        hyperlink.linkActivated.connect(self.link)
-        hyperlink.setStyleSheet("padding: 10px 100px 80px 100px ;")
-
-        buttonBox = QDialogButtonBox(QDialogButtonBox.Ok)
-        buttonBox.clicked.connect(msg.accept)
-        vbox.addWidget(text)
-        vbox.addWidget(hyperlink)
-        vbox.addWidget(buttonBox)
-        msg.setLayout(vbox)
+        msg.setFont(font)
         msg.exec_()
 
 

@@ -9,8 +9,8 @@ import subprocess
 import shutil
 
 from module import TaxamapDlg
-
 from functions import *
+
 
 inputFiles = []
 geneTreeNames = []
@@ -45,14 +45,6 @@ class NetworkMPPage(QWizardPage):
         """
         Initialize GUI.
         """
-      #  wid = QWidget()
-      #  scroll = QScrollArea()
-      #  self.setCentralWidget(scroll)
-
-        # Menubar and action
-        aboutAction = QAction('About', self)
-        aboutAction.triggered.connect(self.aboutMessage)
-        aboutAction.setShortcut("Ctrl+A")
 
         # Title (InferNetwork_MP)
         titleLabel = titleHeader("InferNetwork_MP")
@@ -62,13 +54,13 @@ class NetworkMPPage(QWizardPage):
                           '<a href="https://wiki.rice.edu/confluence/display/PHYLONET/InferNetwork_MP">'
                           'here</a>.')
         hyperlink.linkActivated.connect(self.link)
+        hyperlink.setObjectName("detailsLink")
 
-        # Two subtitles (mandatory and optional commands)
+        # Mandatory parameter labels
         instructionLabel = QLabel()
         instructionLabel.setText("Input data: Please Upload Gene tree files.")
         instructionLabel.setObjectName("instructionLabel")
 
-        # Mandatory parameter labels
         numReticulationsLbl = QLabel("Maximum number of reticulations to add:")
         self.nexus = QCheckBox(".nexus")
         self.nexus.setObjectName("nexus")
@@ -93,10 +85,11 @@ class NetworkMPPage(QWizardPage):
         # Layouts
         # Layout of each parameter (label and input)
         fileFormatLayout = QVBoxLayout()
+        fileFormatLayout.addWidget(instructionLabel)
         fileFormatLayout.addWidget(self.nexus)
         fileFormatLayout.addWidget(self.newick)
         geneTreeDataLayout = QHBoxLayout()
-        geneTreeDataLayout.addWidget(instructionLabel)
+        geneTreeDataLayout.addWidget(self.geneTreesEdit)
         geneTreeDataLayout.addWidget(fileSelctionBtn)
 
         geneTreeFileLayout = QVBoxLayout()
@@ -111,20 +104,10 @@ class NetworkMPPage(QWizardPage):
         topLevelLayout = QVBoxLayout()
         topLevelLayout.addWidget(titleLabel)
         topLevelLayout.addWidget(hyperlink)
-        topLevelLayout.addWidget(lineSeparator(self))
         topLevelLayout.addLayout(geneTreeFileLayout)
-        topLevelLayout.addWidget(self.geneTreesEdit)
         topLevelLayout.addLayout(numReticulationsLayout)
 
-        # Scroll bar
         self.setLayout(topLevelLayout)
-      #  scroll.setWidget(wid)
-      #  scroll.setWidgetResizable(True)
-      #  scroll.setMinimumWidth(695)
-      #  scroll.setMinimumHeight(750)
-
-        self.setWindowTitle('PhyloNetNEXGenerator')
-        self.setWindowIcon(QIcon(resource_path("logo.png")))
 
     def aboutMessage(self):
         msg = QMessageBox()
@@ -147,45 +130,6 @@ class NetworkMPPage(QWizardPage):
         Open the website of PhyloNet if user clicks on the hyperlink.
         """
         QDesktopServices.openUrl(QtCore.QUrl(linkStr))
-
-    def selectFile(self):
-        """
-        Store all the user uploaded gene tree files.
-        Execute when file selection button is clicked.
-        """
-        #initialize global attribute
-        global inputFiles
-        inputFiles.clear()
-        if (not self.newick.isChecked()) and (not self.nexus.isChecked()):
-            QMessageBox.warning(self, "Warning", "Please select a file type.", QMessageBox.Ok)
-        else:
-            if self.nexus.isChecked():
-                fname = QFileDialog.getOpenFileNames(self, 'Open file', '/', 'Nexus files (*.nexus *.nex);;Newick files (*.newick)')
-            elif self.newick.isChecked():
-                fname = QFileDialog.getOpenFileNames(self, 'Open file', '/', 'Newick files (*.newick);;Nexus files (*.nexus *.nex)') 
-            if fname:
-                fileType = fname[1]
-                self.fileType = QLineEdit(fname[1])
-                self.registerField("fileType", self.fileType)
-                if self.nexus.isChecked():
-                    if fileType != 'Nexus files (*.nexus *.nex)':
-                        QMessageBox.warning(self, "Warning", "Please upload only .nexus or .nex files", QMessageBox.Ok)
-                    else:
-                        for onefname in fname[0]:
-                            self.geneTreesEdit.append(onefname)
-                            self.inputFiles.append(str(onefname))
-
-                elif self.newick.isChecked():
-                    if fileType != 'Newick files (*.newick)':
-                        QMessageBox.warning(self, "Warning", "Please upload only .newick files", QMessageBox.Ok)
-                    else:
-                        for onefname in fname[0]:
-                            self.geneTreesEdit.append(onefname)
-                            self.inputFiles.append(str(onefname))
-                else:
-                    return
-                #Update global attribute
-                inputFiles = self.inputFiles
 
     def format(self):
         """
@@ -210,7 +154,50 @@ class NetworkMPPage(QWizardPage):
             else:
                 self.nexus.setChecked(False)
                 self.newick.setChecked(True)
-        
+
+    def selectFile(self):
+        """
+        Store all the user uploaded gene tree files.
+        Execute when file selection button is clicked.
+        """
+        #initialize global attribute
+        global inputFiles
+        inputFiles.clear()
+        if (not self.newick.isChecked()) and (not self.nexus.isChecked()):
+            QMessageBox.warning(self, "Warning", "Please select a file type.", QMessageBox.Ok)
+        else:
+            if self.nexus.isChecked():
+                fname = QFileDialog.getOpenFileNames(self, 'Open file', '/', 'Nexus files (*.nexus *.nex);;Newick files (*.newick)')
+            elif self.newick.isChecked():
+                fname = QFileDialog.getOpenFileNames(self, 'Open file', '/', 'Newick files (*.newick);;Nexus files (*.nexus *.nex)') 
+            
+            #if a file has been inputted, proceed
+            if len(fname[0]) > 0:
+                fileType = fname[1]
+                self.fileType = QLineEdit(fname[1])
+                self.registerField("fileType", self.fileType)
+                print("**********IN MP******")
+                print("At selectfile")
+                print("what is filetype", self.fileType)                
+                if self.nexus.isChecked():
+                    if fileType != 'Nexus files (*.nexus *.nex)':
+                        QMessageBox.warning(self, "Warning", "Please upload only .nexus or .nex files", QMessageBox.Ok)
+                    else:
+                        for onefname in fname[0]:
+                            self.geneTreesEdit.append(onefname)
+                            self.inputFiles.append(str(onefname))
+
+                elif self.newick.isChecked():
+                    if fileType != 'Newick files (*.newick)':
+                        QMessageBox.warning(self, "Warning", "Please upload only .newick files", QMessageBox.Ok)
+                    else:
+                        for onefname in fname[0]:
+                            self.geneTreesEdit.append(onefname)
+                            self.inputFiles.append(str(onefname))
+                else:
+                    return
+                #Update global attribute
+                inputFiles = self.inputFiles
 
 class NetworkMPPage2(QWizardPage):
     def initializePage(self):
@@ -230,14 +217,6 @@ class NetworkMPPage2(QWizardPage):
         """
         Initialize GUI.
         """
-      #  wid = QWidget()
-      #  scroll = QScrollArea()
-      #  self.setCentralWidget(scroll)
-
-        # Menubar and action
-        aboutAction = QAction('About', self)
-        aboutAction.triggered.connect(self.aboutMessage)
-        aboutAction.setShortcut("Ctrl+A")
 
         # Title (InferNetwork_MP)
         titleLabel = titleHeader("InferNetwork_MP")
@@ -247,10 +226,10 @@ class NetworkMPPage2(QWizardPage):
                           '<a href="https://wiki.rice.edu/confluence/display/PHYLONET/InferNetwork_MP">'
                           'here</a>.')
         hyperlink.linkActivated.connect(self.link)
+        hyperlink.setObjectName("detailsLink")
 
-        # Two subtitles (mandatory and optional commands)
         optionalLabel = QLabel()
-        optionalLabel.setObjectName("instructionInput")
+        optionalLabel.setObjectName("instructionLabel")
         optionalLabel.setText("Input Options")
 
         # Optional parameter labels
@@ -346,8 +325,6 @@ class NetworkMPPage2(QWizardPage):
         topLevelLayout = QVBoxLayout()
         topLevelLayout.addWidget(titleLabel)
         topLevelLayout.addWidget(hyperlink)
-        topLevelLayout.addWidget(lineSeparator(self))
-
         topLevelLayout.addWidget(optionalLabel)
         topLevelLayout.addLayout(thresholdLayout)
         topLevelLayout.addLayout(taxamapLayout)
@@ -356,16 +333,8 @@ class NetworkMPPage2(QWizardPage):
         topLevelLayout.addLayout(nNetExamLayout)
         topLevelLayout.addLayout(maxDiaLayout)
 
-        # Scroll bar
         self.setLayout(topLevelLayout)
-      #  scroll.setWidget(wid)
-      #  scroll.setWidgetResizable(True)
-      #  scroll.setMinimumWidth(695)
-      #  scroll.setMinimumHeight(750)
-
-        self.setWindowTitle('PhyloNetNEXGenerator')
-        self.setWindowIcon(QIcon(resource_path("logo.png")))
-
+ 
     def __inverseMapping(self, map):
         """
         Convert a mapping from taxon to species to a mapping from species to a list of taxon.
@@ -393,7 +362,6 @@ class NetworkMPPage2(QWizardPage):
 
         msg.setFont(font)
         msg.exec_()
-        topLevelLayout.addLayout(hybridLayout)
 
     def onChecked(self):
         """
@@ -474,7 +442,16 @@ class NetworkMPPage2(QWizardPage):
         taxamap.clear()
         #update shared attribute
         self.inputFiles = inputFiles
-
+        """
+        print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
+        print("at the start of get taxamap")
+        print("self taxamap", self.taxamap)
+        print("taxamap", taxamap)
+        print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
+        print("at the start of get taxamap")
+        print("self inputfile", self.inputFiles)
+        print("inputfile", inputFiles)
+        """
         class emptyFileError(Exception):
             pass
         try:
@@ -507,20 +484,25 @@ class NetworkMPPage2(QWizardPage):
                         for taxon in data.taxon_namespace:
                             self.taxamap[taxon.label] = taxon.label
                         break
+
             # Execute TaxamapDlg
             dialog = TaxamapDlg.TaxamapDlg(data.taxon_namespace, self.taxamap, self)
             if dialog.exec_():
                 self.taxamap = dialog.getTaxamap()
             #Update global attribute
             taxamap = self.taxamap
-
+            """
+            print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
+            print("at the end of get taxamap")
+            print("self taxamap", self.taxamap)
+            print("taxamap", taxamap)
+            """
         except emptyFileError:
             QMessageBox.warning(self, "Warning", "Please select a file type and upload data!", QMessageBox.Ok)
             return
         except Exception as e:
             QMessageBox.warning(self, "Warning", str(e), QMessageBox.Ok)
             return
-
 
 
 class NetworkMPPage3(QWizardPage):
@@ -538,44 +520,20 @@ class NetworkMPPage3(QWizardPage):
         """
         Initialize GUI.
         """
-      #  wid = QWidget()
-      #  scroll = QScrollArea()
-      #  self.setCentralWidget(scroll)
-
-        # Menubar and action
-        aboutAction = QAction('About', self)
-        aboutAction.triggered.connect(self.aboutMessage)
-        aboutAction.setShortcut("Ctrl+A")
-
-        self.menubar = QMenuBar(self)
-        menuMenu = self.menubar.addMenu('Menu')
-        menuMenu.addAction(aboutAction)
 
         # Title (InferNetwork_MP)
-        titleLabel = QLabel()
-        titleLabel.setText("InferNetwork_MP")
-
-        titleFont = QFont()
-        titleFont.setPointSize(24)
-        titleFont.setFamily("Helvetica")
-        titleFont.setBold(True)
-        titleLabel.setFont(titleFont)
+        titleLabel = titleHeader("InferNetwork_MP")
 
         hyperlink = QLabel()
         hyperlink.setText('Details of this method can be found '
                           '<a href="https://wiki.rice.edu/confluence/display/PHYLONET/InferNetwork_MP">'
                           'here</a>.')
         hyperlink.linkActivated.connect(self.link)
+        hyperlink.setObjectName("detailsLink")
 
-        # Two subtitles (mandatory and optional commands)
         optionalLabel = QLabel()
+        optionalLabel.setObjectName("instructionLabel")
         optionalLabel.setText("Input Options")
-
-        subTitleFont = QFont()
-        subTitleFont.setPointSize(18)
-        subTitleFont.setFamily("Times New Roman")
-        subTitleFont.setBold(True)
-        optionalLabel.setFont(subTitleFont)
 
         self.hybridLbl = QCheckBox("A set of specified hybrid species:", self)
         self.hybridLbl.setObjectName("-h")
@@ -656,7 +614,6 @@ class NetworkMPPage3(QWizardPage):
         topLevelLayout = QVBoxLayout()
         topLevelLayout.addWidget(titleLabel)
         topLevelLayout.addWidget(hyperlink)
-        topLevelLayout.addWidget(lineSeparator(self))
         topLevelLayout.addLayout(hybridLayout)
         topLevelLayout.addLayout(wetOpLayout)
         topLevelLayout.addLayout(maxFLayout)
@@ -724,6 +681,7 @@ class NetworkMPPage3(QWizardPage):
             else:
                 self.nNetRetEdit.setDisabled(False)
         elif self.sender().objectName() == "-m":
+            print("What is nnetExam though ", self.nNetExamEdit)
             if self.nNetExamEdit.isEnabled():
                 self.nNetExamEdit.setDisabled(True)
             else:
@@ -814,18 +772,6 @@ class NetworkMPPage4(QWizardPage):
         """
         Initialize GUI.
         """
-      #  wid = QWidget()
-      #  scroll = QScrollArea()
-      #  self.setCentralWidget(scroll)
-
-        # Menubar and action
-        aboutAction = QAction('About', self)
-        aboutAction.triggered.connect(self.aboutMessage)
-        aboutAction.setShortcut("Ctrl+A")
-
-        self.menubar = QMenuBar(self)
-        menuMenu = self.menubar.addMenu('Menu')
-        menuMenu.addAction(aboutAction)
 
         # Title (InferNetwork_MP)
         titleLabel = titleHeader("InferNetwork_MP")
@@ -835,16 +781,11 @@ class NetworkMPPage4(QWizardPage):
                           '<a href="https://wiki.rice.edu/confluence/display/PHYLONET/InferNetwork_MP">'
                           'here</a>.')
         hyperlink.linkActivated.connect(self.link)
+        hyperlink.setObjectName("detailsLink")
 
-        # Two subtitles (mandatory and optional commands)
         optionalLabel = QLabel()
+        optionalLabel.setObjectName("instructionLabel")
         optionalLabel.setText("Input Options")
-
-        subTitleFont = QFont()
-        subTitleFont.setPointSize(18)
-        subTitleFont.setFamily("Times New Roman")
-        subTitleFont.setBold(True)
-        optionalLabel.setFont(subTitleFont)
 
         # Labels
         self.diLbl = QCheckBox(
@@ -865,10 +806,7 @@ class NetworkMPPage4(QWizardPage):
         topLevelLayout = QVBoxLayout()
         topLevelLayout.addWidget(titleLabel)
         topLevelLayout.addWidget(hyperlink)
-        topLevelLayout.addWidget(lineSeparator(self))
         topLevelLayout.addLayout(diLayout)
-
-        topLevelLayout.addWidget(lineSeparator(self))
         topLevelLayout.addLayout(btnLayout)
 
         self.setLayout(topLevelLayout)
@@ -975,6 +913,16 @@ class NetworkMPPage4(QWizardPage):
         """
         Generate NEXUS file based on user input.
         """
+        #update shared attributes
+        self.inputFiles = inputFiles
+        self.taxamap = taxamap
+        print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
+        print("at generate")
+        print("self taxamap", self.taxamap)
+        print("taxamap", taxamap)
+        print("_--------------")
+        print("self inputfiles", self.inputFiles)
+        print("file", inputFiles)
 
         directory = QFileDialog.getSaveFileName(
             self, "Save File", "/", "Nexus Files (*.nexus)")
@@ -996,6 +944,9 @@ class NetworkMPPage4(QWizardPage):
             if directory[0] == "":
                 raise emptyDesinationError
 
+            print("--------------")
+            print("At generate")
+            print("what is filetype", self.fileType)
             # the file format to read
             if self.fileType == 'Nexus files (*.nexus *.nex)':
                 schema = "nexus"
@@ -1075,6 +1026,8 @@ class NetworkMPPage4(QWizardPage):
                 else:
                     outputFile.write(" -b ")
                     outputFile.write(self.thresholdEdit)
+                    #clear field
+                    self.thresholdEdit = ""
 
                 # -s startingNetwork command
                 if self.sNetEdit == "":
@@ -1082,6 +1035,8 @@ class NetworkMPPage4(QWizardPage):
                 else:
                     outputFile.write(" -s ")
                     outputFile.write(self.sNetEdit)
+                    #clear field
+                    self.sNetEdit = ""
 
                 # -n numNetReturned command
                 if self.nNetRetEdit == "":
@@ -1089,13 +1044,17 @@ class NetworkMPPage4(QWizardPage):
                 else:
                     outputFile.write(" -n ")
                     outputFile.write(self.nNetRetEdit)
+                    #clear field
+                    self.nNetRetEdit = ""
 
-                # -m maxNetExamined command
+                # -m maxNetExamined command              
                 if self.nNetExamEdit == "":
                     pass
                 else:
                     outputFile.write(" -m ")
                     outputFile.write(self.nNetExamEdit)
+                    #clear field
+                    self.nNetExamEdit = ""
 
                 # -d maxDiameter command
                 if self.maxDiaEdit == "":
@@ -1103,6 +1062,8 @@ class NetworkMPPage4(QWizardPage):
                 else:
                     outputFile.write(" -rd ")
                     outputFile.write(self.maxDiaEdit)
+                    #clear field
+                    self.maxDiaEdit = ""
 
                 # -h {s1 [, s2...]} command
                 if self.hybridEdit == "":
@@ -1110,6 +1071,8 @@ class NetworkMPPage4(QWizardPage):
                 else:
                     outputFile.write(" -h ")
                     outputFile.write(self.hybridEdit)
+                    #clear field
+                    self.hybridEdit = ""
 
                 # -w (w1, ..., w6) command
                 if self.wetOpEdit == "":
@@ -1117,13 +1080,17 @@ class NetworkMPPage4(QWizardPage):
                 else:
                     outputFile.write(" -w ")
                     outputFile.write(self.wetOpEdit)
-
+                    #clear field
+                    self.wetOpEdit = ""
+                    
                 # -f maxFailure command
                 if self.maxFEdit == "":
                     pass
                 else:
                     outputFile.write(" -f ")
                     outputFile.write(self.maxFEdit)
+                    #clear field
+                    self.maxFEdit = ""
 
                 # -x numRuns command
                 if self.numRunEdit == "":
@@ -1131,6 +1098,8 @@ class NetworkMPPage4(QWizardPage):
                 else:
                     outputFile.write(" -x ")
                     outputFile.write(self.numRunEdit)
+                    #clear field
+                    self.numRunEdit = ""
 
                 # -pl numProcessors command
                 if self.numProcEdit == "":
@@ -1138,10 +1107,14 @@ class NetworkMPPage4(QWizardPage):
                 else:
                     outputFile.write(" -pl ")
                     outputFile.write(self.numProcEdit)
+                    #clear field
+                    self.numProcEdit = ""
 
                 # -di command
                 if self.diLbl.isChecked():
                     outputFile.write(" -di")
+                    #clear field
+                    self.diLbl.setChecked(False)
 
                 # End of NEXUS
                 outputFile.write(";\n\n")
@@ -1180,6 +1153,9 @@ class NetworkMPPage4(QWizardPage):
         After the .nexus file is generated, validate the file by feeding it to PhyloNet.
         Specify -checkParams on command line to make sure PhyloNet checks input without executing the command.
         """
+        print("Inside validatefile path is", filePath)
+        print("Resource path is ", resource_path("module/testphlyonet.jar"))
+        print("Is it a string", isinstance(resource_path("module\\testphylonet.jar"), str))                 
         try:
             subprocess.check_output(
                 ["java", "-jar", resource_path("module/testphylonet.jar"),

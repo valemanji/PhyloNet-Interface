@@ -70,17 +70,17 @@ class NetworkMPPage(QWizardPage):
         self.newick.stateChanged.connect(self.format)  # Implement mutually exclusive check boxes
 
         # Mandatory parameter inputs
-        self.geneTreesEdit = QTextEdit()
-        self.geneTreesEdit.setReadOnly(True)
-        self.registerField("geneTreesEdit*", self.geneTreesEdit,
-                           "plainText", self.geneTreesEdit.textChanged)
+        self.geneTreesEditMP = QTextEdit()
+        self.geneTreesEditMP.setReadOnly(True)
+        self.registerField("geneTreesEditMP*", self.geneTreesEditMP,
+                           "plainText", self.geneTreesEditMP.textChanged)
 
         fileSelctionBtn = QToolButton()
         fileSelctionBtn.setText("Browse")
         fileSelctionBtn.clicked.connect(self.selectFile)
 
-        self.numReticulationsEdit = QLineEdit()
-        self.registerField("numReticulationsEdit*", self.numReticulationsEdit)
+        self.numReticulationsEditMP = QLineEdit()
+        self.registerField("numReticulationsEditMP*", self.numReticulationsEditMP)
 
         # Layouts
         # Layout of each parameter (label and input)
@@ -89,7 +89,7 @@ class NetworkMPPage(QWizardPage):
         fileFormatLayout.addWidget(self.nexus)
         fileFormatLayout.addWidget(self.newick)
         geneTreeDataLayout = QHBoxLayout()
-        geneTreeDataLayout.addWidget(self.geneTreesEdit)
+        geneTreeDataLayout.addWidget(self.geneTreesEditMP)
         geneTreeDataLayout.addWidget(fileSelctionBtn)
 
         geneTreeFileLayout = QVBoxLayout()
@@ -98,7 +98,7 @@ class NetworkMPPage(QWizardPage):
 
         numReticulationsLayout = QHBoxLayout()
         numReticulationsLayout.addWidget(numReticulationsLbl)
-        numReticulationsLayout.addWidget(self.numReticulationsEdit)
+        numReticulationsLayout.addWidget(self.numReticulationsEditMP)
 
         # Main layout
         topLevelLayout = QVBoxLayout()
@@ -137,7 +137,7 @@ class NetworkMPPage(QWizardPage):
         """
         if self.sender().objectName() == "nexus":
             if not self.nexus.isChecked():
-                self.geneTreesEdit.clear()
+                self.geneTreesEditMP.clear()
                 self.inputFiles = []
                 self.geneTreeNames = []
                 self.taxamap = {}
@@ -146,7 +146,7 @@ class NetworkMPPage(QWizardPage):
                 
         elif self.sender().objectName() == "newick":
             if not self.newick.isChecked():
-                self.geneTreesEdit.clear()
+                self.geneTreesEditMP.clear()
                 self.inputFiles = []
                 self.geneTreeNames = []
                 self.taxamap = {}
@@ -175,16 +175,14 @@ class NetworkMPPage(QWizardPage):
             if len(fname[0]) > 0:
                 fileType = fname[1]
                 self.fileType = QLineEdit(fname[1])
-                self.registerField("fileType", self.fileType)
-                print("**********IN MP******")
-                print("At selectfile")
-                print("what is filetype", self.fileType)                
+                self.registerField("fileTypeMP", self.fileType)
+
                 if self.nexus.isChecked():
                     if fileType != 'Nexus files (*.nexus *.nex)':
                         QMessageBox.warning(self, "Warning", "Please upload only .nexus or .nex files", QMessageBox.Ok)
                     else:
                         for onefname in fname[0]:
-                            self.geneTreesEdit.append(onefname)
+                            self.geneTreesEditMP.append(onefname)
                             self.inputFiles.append(str(onefname))
 
                 elif self.newick.isChecked():
@@ -192,7 +190,7 @@ class NetworkMPPage(QWizardPage):
                         QMessageBox.warning(self, "Warning", "Please upload only .newick files", QMessageBox.Ok)
                     else:
                         for onefname in fname[0]:
-                            self.geneTreesEdit.append(onefname)
+                            self.geneTreesEditMP.append(onefname)
                             self.inputFiles.append(str(onefname))
                 else:
                     return
@@ -201,7 +199,7 @@ class NetworkMPPage(QWizardPage):
 
 class NetworkMPPage2(QWizardPage):
     def initializePage(self):
-        self.fileType = self.field("fileType")
+        self.fileType = self.field("fileTypeMP")
 
     def __init__(self):
 
@@ -264,7 +262,7 @@ class NetworkMPPage2(QWizardPage):
         # Optional parameter inputs
         self.thresholdEdit = QLineEdit()
         self.thresholdEdit.setDisabled(True)
-        self.registerField("thresholdEdit", self.thresholdEdit)
+        self.registerField("thresholdEditMP", self.thresholdEdit)
 
         self.taxamapEdit = QPushButton("Set taxa map")
         self.taxamapEdit.setObjectName("taxamapEdit")
@@ -273,22 +271,22 @@ class NetworkMPPage2(QWizardPage):
 
         self.sNetEdit = QLineEdit()
         self.sNetEdit.setDisabled(True)
-        self.registerField("sNetEdit", self.sNetEdit)
+        self.registerField("sNetEditMP", self.sNetEdit)
 
         self.nNetRetEdit = QLineEdit()
         self.nNetRetEdit.setDisabled(True)
         self.nNetRetEdit.setPlaceholderText("1")
-        self.registerField("nNetRetEdit", self.nNetRetEdit)
+        self.registerField("nNetRetEditMP", self.nNetRetEdit)
 
         self.nNetExamEdit = QLineEdit()
         self.nNetExamEdit.setDisabled(True)
         self.nNetExamEdit.setPlaceholderText("infinity")
-        self.registerField("nNetExamEdit", self.nNetExamEdit)
+        self.registerField("nNetExamEditMP", self.nNetExamEdit)
 
         self.maxDiaEdit = QLineEdit()
         self.maxDiaEdit.setDisabled(True)
         self.maxDiaEdit.setPlaceholderText("infinity")
-        self.registerField("maxDiaEdit", self.maxDiaEdit)
+        self.registerField("maxDiaEditMP", self.maxDiaEdit)
 
         # Layouts
         # Layout of each parameter (label and input)
@@ -442,16 +440,7 @@ class NetworkMPPage2(QWizardPage):
         taxamap.clear()
         #update shared attribute
         self.inputFiles = inputFiles
-        """
-        print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
-        print("at the start of get taxamap")
-        print("self taxamap", self.taxamap)
-        print("taxamap", taxamap)
-        print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
-        print("at the start of get taxamap")
-        print("self inputfile", self.inputFiles)
-        print("inputfile", inputFiles)
-        """
+
         class emptyFileError(Exception):
             pass
         try:
@@ -491,12 +480,7 @@ class NetworkMPPage2(QWizardPage):
                 self.taxamap = dialog.getTaxamap()
             #Update global attribute
             taxamap = self.taxamap
-            """
-            print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
-            print("at the end of get taxamap")
-            print("self taxamap", self.taxamap)
-            print("taxamap", taxamap)
-            """
+
         except emptyFileError:
             QMessageBox.warning(self, "Warning", "Please select a file type and upload data!", QMessageBox.Ok)
             return
@@ -561,28 +545,28 @@ class NetworkMPPage3(QWizardPage):
 
         self.hybridEdit = QLineEdit()
         self.hybridEdit.setDisabled(True)
-        self.registerField("hybridEdit", self.hybridEdit)
+        self.registerField("hybridEditMP", self.hybridEdit)
 
         self.wetOpEdit = QLineEdit()
         self.wetOpEdit.setDisabled(True)
         self.wetOpEdit.setPlaceholderText("(0.1,0.1,0.15,0.55,0.15,0.15)")
         self.wetOpEdit.setMinimumWidth(200)
-        self.registerField("wetOpEdit", self.wetOpEdit)
+        self.registerField("wetOpEditMP", self.wetOpEdit)
 
         self.maxFEdit = QLineEdit()
         self.maxFEdit.setDisabled(True)
         self.maxFEdit.setPlaceholderText("100")
-        self.registerField("maxFEdit", self.maxFEdit)
+        self.registerField("maxFEditMP", self.maxFEdit)
 
         self.numRunEdit = QLineEdit()
         self.numRunEdit.setDisabled(True)
         self.numRunEdit.setPlaceholderText("5")
-        self.registerField("numRunEdit", self.numRunEdit)
+        self.registerField("numRunEditMP", self.numRunEdit)
 
         self.numProcEdit = QLineEdit()
         self.numProcEdit.setDisabled(True)
         self.numProcEdit.setPlaceholderText("1")
-        self.registerField("numProcEdit", self.numProcEdit)
+        self.registerField("numProcEditMP", self.numProcEdit)
 
         #
 
@@ -610,7 +594,7 @@ class NetworkMPPage3(QWizardPage):
         numProcLayout.addStretch(1)
         numProcLayout.addWidget(self.numProcEdit)
 
-        #
+        #main level layout
         topLevelLayout = QVBoxLayout()
         topLevelLayout.addWidget(titleLabel)
         topLevelLayout.addWidget(hyperlink)
@@ -681,7 +665,6 @@ class NetworkMPPage3(QWizardPage):
             else:
                 self.nNetRetEdit.setDisabled(False)
         elif self.sender().objectName() == "-m":
-            print("What is nnetExam though ", self.nNetExamEdit)
             if self.nNetExamEdit.isEnabled():
                 self.nNetExamEdit.setDisabled(True)
             else:
@@ -725,7 +708,7 @@ class NetworkMPPage3(QWizardPage):
         """
         if self.sender().objectName() == "nexus":
             if not self.nexus.isChecked():
-                self.geneTreesEdit.clear()
+                self.geneTreesEditMP.clear()
                 self.inputFiles = []
                 self.geneTreeNames = []
                 self.taxamap = {}
@@ -733,7 +716,7 @@ class NetworkMPPage3(QWizardPage):
                 self.newick.setChecked(False)
         elif self.sender().objectName() == "newick":
             if not self.newick.isChecked():
-                self.geneTreesEdit.clear()
+                self.geneTreesEditMP.clear()
                 self.inputFiles = []
                 self.geneTreeNames = []
                 self.taxamap = {}
@@ -744,19 +727,19 @@ class NetworkMPPage3(QWizardPage):
 class NetworkMPPage4(QWizardPage):
 
     def initializePage(self):
-        self.geneTreesEdit = self.field("geneTreesEdit")
-        self.numReticulationsEdit = self.field("numReticulationsEdit")
-        self.thresholdEdit = self.field("thresholdEdit")
-        self.sNetEdit = self.field("sNetEdit")
-        self.nNetRetEdit = self.field("nNetRetEdit")
-        self.nNetExamEdit = self.field("nNetExamEdit")
-        self.maxDiaEdit = self.field("maxDiaEdit")
-        self.hybridEdit = self.field("hybridEdit")
-        self.wetOpEdit = self.field("wetOpEdit")
-        self.maxFEdit = self.field("maxFEdit")
-        self.numRunEdit = self.field("numRunEdit")
-        self.numProcEdit = self.field("numProcEdit")
-        self.fileType = self.field("fileType")
+        self.geneTreesEditMP = self.field("geneTreesEditMP")
+        self.numReticulationsEditMP = self.field("numReticulationsEditMP")
+        self.thresholdEdit = self.field("thresholdEditMP")
+        self.sNetEdit = self.field("sNetEditMP")
+        self.nNetRetEdit = self.field("nNetRetEditMP")
+        self.nNetExamEdit = self.field("nNetExamEditMP")
+        self.maxDiaEdit = self.field("maxDiaEditMP")
+        self.hybridEdit = self.field("hybridEditMP")
+        self.wetOpEdit = self.field("wetOpEditMP")
+        self.maxFEdit = self.field("maxFEditMP")
+        self.numRunEdit = self.field("numRunEditMP")
+        self.numProcEdit = self.field("numProcEditMP")
+        self.fileType = self.field("fileTypeMP")
 
     def __init__(self):
 
@@ -916,13 +899,6 @@ class NetworkMPPage4(QWizardPage):
         #update shared attributes
         self.inputFiles = inputFiles
         self.taxamap = taxamap
-        print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
-        print("at generate")
-        print("self taxamap", self.taxamap)
-        print("taxamap", taxamap)
-        print("_--------------")
-        print("self inputfiles", self.inputFiles)
-        print("file", inputFiles)
 
         directory = QFileDialog.getSaveFileName(
             self, "Save File", "/", "Nexus Files (*.nexus)")
@@ -939,14 +915,11 @@ class NetworkMPPage4(QWizardPage):
         try:
             if len(self.inputFiles) == 0:
                 raise emptyFileError
-            if self.numReticulationsEdit == "":
+            if self.numReticulationsEditMP == "":
                 raise emptyNumReticulationError
             if directory[0] == "":
                 raise emptyDesinationError
 
-            print("--------------")
-            print("At generate")
-            print("what is filetype", self.fileType)
             # the file format to read
             if self.fileType == 'Nexus files (*.nexus *.nex)':
                 schema = "nexus"
@@ -990,7 +963,7 @@ class NetworkMPPage4(QWizardPage):
                 outputFile.write(") ")
 
                 # Write out maximum number of reticulation to add.
-                outputFile.write(self.numReticulationsEdit)
+                outputFile.write(self.numReticulationsEditMP)
 
                 # -a taxa map command
                 if len(self.taxamap) == 0:
@@ -1123,7 +1096,7 @@ class NetworkMPPage4(QWizardPage):
             self.geneTreeNames = []
             self.inputFiles = []
             self.taxamap = {}
-            self.geneTreesEdit = ""
+            self.geneTreesEditMP = ""
 
             # Validate the generated file.
             self.validateFile(path)
@@ -1144,7 +1117,7 @@ class NetworkMPPage4(QWizardPage):
             self.geneTreeNames = []
             self.inputFiles = []
             self.taxamap = {}
-            self.geneTreesEdit = ""
+            self.geneTreesEditMP = ""
             QMessageBox.warning(self, "Warning", str(e), QMessageBox.Ok)
             return
 
@@ -1152,10 +1125,7 @@ class NetworkMPPage4(QWizardPage):
         """
         After the .nexus file is generated, validate the file by feeding it to PhyloNet.
         Specify -checkParams on command line to make sure PhyloNet checks input without executing the command.
-        """
-        print("Inside validatefile path is", filePath)
-        print("Resource path is ", resource_path("module/testphlyonet.jar"))
-        print("Is it a string", isinstance(resource_path("module\\testphylonet.jar"), str))                 
+        """             
         try:
             subprocess.check_output(
                 ["java", "-jar", resource_path("module/testphylonet.jar"),

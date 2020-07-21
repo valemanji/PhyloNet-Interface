@@ -130,7 +130,7 @@ class MCMCGTPage(QWizardPage):
         """
         if self.sender().objectName() == "nexus":
             if not self.nexus.isChecked():
-                self.geneTreesEditMCGT.clear()
+                self.geneTreesEditMCGT = ""
                 self.inputFiles = []
                 self.geneTreeNames = []
                 self.taxamap = {}
@@ -138,7 +138,7 @@ class MCMCGTPage(QWizardPage):
                 self.newick.setChecked(False)
         elif self.sender().objectName() == "newick":
             if not self.newick.isChecked():
-                self.geneTreesEditMCGT.clear()
+                self.geneTreesEditMCGT = ""
                 self.inputFiles = []
                 self.geneTreeNames = []
                 self.taxamap = {}
@@ -161,10 +161,11 @@ class MCMCGTPage(QWizardPage):
                 fname = QFileDialog.getOpenFileNames(self, 'Open file', '/', 'Nexus files (*.nexus *.nex);;Newick files (*.newick)')
             elif self.newick.isChecked():
                 fname = QFileDialog.getOpenFileNames(self, 'Open file', '/', 'Newick files (*.newick);;Nexus files (*.nexus *.nex)') 
-            if fname:
+            #if a file has been inputted, proceed
+            if len(fname[0]) > 0:
                 fileType = fname[1]
                 self.fileType = QLineEdit(fname[1])
-                self.registerField("fileType", self.fileType)
+                self.registerField("fileTypeMCGT", self.fileType)
                 if self.nexus.isChecked():
                     if fileType != 'Nexus files (*.nexus *.nex)':
                         QMessageBox.warning(self, "Warning", "Please upload only .nexus or .nex files", QMessageBox.Ok)
@@ -187,7 +188,7 @@ class MCMCGTPage(QWizardPage):
 
 class MCMCGTPage2(QWizardPage):
     def initializePage(self):
-        self.fileType = self.field("fileType")
+        self.fileType = self.field("fileTypeMCGT")
         self.geneTreesEditMCGT = self.field("geneTreesEditMCGT")
 
     def __init__(self):
@@ -251,32 +252,32 @@ class MCMCGTPage2(QWizardPage):
         self.chainLengthEdit = QLineEdit()
         self.chainLengthEdit.setDisabled(True)
         self.chainLengthEdit.setPlaceholderText("1100000")
-        self.registerField("chainLengthEdit", self.chainLengthEdit)
+        self.registerField("chainLengthEditMCGT", self.chainLengthEdit)
 
         self.burnInLengthEdit = QLineEdit()
         self.burnInLengthEdit.setDisabled(True)
         self.burnInLengthEdit.setPlaceholderText("100000")
-        self.registerField("burnInLengthEdit", self.burnInLengthEdit)
+        self.registerField("burnInLengthEditMCGT", self.burnInLengthEdit)
 
         self.sampleFrequencyEdit = QLineEdit()
         self.sampleFrequencyEdit.setDisabled(True)
         self.sampleFrequencyEdit.setPlaceholderText("1000")
-        self.registerField("sampleFrequencyEdit", self.sampleFrequencyEdit)
+        self.registerField("sampleFrequencyEditMCGT", self.sampleFrequencyEdit)
 
         self.seedEdit = QLineEdit()
         self.seedEdit.setDisabled(True)
         self.seedEdit.setPlaceholderText("12345678")
-        self.registerField("seedEdit", self.seedEdit)
+        self.registerField("seedEditMCGT", self.seedEdit)
 
         self.ppEdit = QLineEdit()
         self.ppEdit.setDisabled(True)
         self.ppEdit.setPlaceholderText("1.0")
-        self.registerField("ppEdit", self.ppEdit)
+        self.registerField("ppEditMCGT", self.ppEdit)
 
         self.maxRetEdit = QLineEdit()
         self.maxRetEdit.setDisabled(True)
         self.maxRetEdit.setPlaceholderText("infinity")
-        self.registerField("maxRetEdit", self.maxRetEdit)
+        self.registerField("maxRetEditMCGT", self.maxRetEdit)
 
         # Layouts
         # Layouts of each parameter and inputs
@@ -393,14 +394,14 @@ class MCMCGTPage2(QWizardPage):
 
 class MCMCGTPage3(QWizardPage):
     def initializePage(self):
-        self.fileType = self.field("fileType")
+        self.fileType = self.field("fileTypeMCGT")
         self.geneTreesEditMCGT = self.field("geneTreesEditMCGT")
-        self.chainLengthEdit = self.field("chainLengthEdit")
-        self.burnInLengthEdit = self.field("burnInlengthEdit")
-        self.sampleFrequencyEdit = self.field("sampleFrequencyEdit")
-        self.seedEdit = self.field("seedEdit")
-        self.ppEdit = self.field("ppEdit")
-        self.maxRetEdit = self.field("maxRetEdit")
+        self.chainLengthEdit = self.field("chainLengthEditMCGT")
+        self.burnInLengthEdit = self.field("burnInLengthEditMCGT")
+        self.sampleFrequencyEdit = self.field("sampleFrequencyEditMCGT")
+        self.seedEdit = self.field("seedEditMCGT")
+        self.ppEdit = self.field("ppEditMCGT")
+        self.maxRetEdit = self.field("maxRetEditMCGT")
 
     def __init__(self):
         super(MCMCGTPage3, self).__init__()
@@ -822,6 +823,11 @@ class MCMCGTPage3(QWizardPage):
                     else:
                         outputFile.write(" -pl ")
                         outputFile.write(str(self.numProcEdit.text()))
+                        #clear text
+                        self.numProcEdit.clear()
+                    #clear checkbox
+                    self.numProcLbl.setChecked(False)
+
 
                 # -tp temperatureList command
                 if self.tempListLbl.isChecked():
@@ -830,6 +836,10 @@ class MCMCGTPage3(QWizardPage):
                     else:
                         outputFile.write(" -tp ")
                         outputFile.write(str(self.tempListEdit.text()))
+                        #clear text
+                        self.tempListEdit.clear()
+                    #clear checkbox
+                    self.tempListLbl.setChecked(False)
 
                 # -sn startingNetworkList command
                 if self.sNetListLbl.isChecked():
@@ -838,6 +848,10 @@ class MCMCGTPage3(QWizardPage):
                     else:
                         outputFile.write(" -sn ")
                         outputFile.write(str(self.sNetListEdit.text()))
+                        #clear text
+                        self.sNetListEdit.clear()
+                    #clear checkbox
+                    self.sNetListLbl.setChecked(False)
 
                 # -tm taxa map command
                 if self.taxamapLbl.isChecked():
@@ -867,10 +881,14 @@ class MCMCGTPage3(QWizardPage):
                                 outputFile.write(taxon)
 
                         outputFile.write(">")
+                    #clear checkbox
+                    self.taxamapLbl.setChecked(False)
 
                 # -pseudo command
                 if self.pseudoLbl.isChecked():
                     outputFile.write(" -pseudo")
+                    #clear checkbox
+                    self.pseudoLbl.setChecked(False)
 
                 # End of NEXUS
                 outputFile.write(";\n\n")
@@ -879,7 +897,7 @@ class MCMCGTPage3(QWizardPage):
             self.geneTreeNames = []
             self.inputFiles = []
             self.taxamap = {}
-            self.geneTreesEditMCGT.clear()
+            self.geneTreesEditMCGT = ""
             self.multiTreesPerLocus = False
 
             # Validate the generated file.
@@ -895,7 +913,7 @@ class MCMCGTPage3(QWizardPage):
             self.geneTreeNames = []
             self.inputFiles = []
             self.taxamap = {}
-            self.geneTreesEditMCGT.clear()
+            self.geneTreesEditMCGT = ""
             self.multiTreesPerLocus = False
             QMessageBox.warning(self, "Warning", str(e), QMessageBox.Ok)
             return

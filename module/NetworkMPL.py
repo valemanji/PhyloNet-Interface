@@ -174,10 +174,8 @@ class NetworkMPLPage(QWizardPage):
             if len(fname[0]) > 0:
                 fileType = fname[1]
                 self.fileType = QLineEdit(fname[1])
-                self.registerField("fileType", self.fileType)
-                print("**********IN MPL******")
-                print("At selectfile")
-                print("what is filetype", self.fileType)
+                self.registerField("fileTypeMPL", self.fileType)
+
                 if self.nexus.isChecked():
                     if fileType != 'Nexus files (*.nexus *.nex)':
                         QMessageBox.warning(self, "Warning", "Please upload only .nexus or .nex files", QMessageBox.Ok)
@@ -200,7 +198,7 @@ class NetworkMPLPage(QWizardPage):
        
 class NetworkMPLPage2(QWizardPage):
     def initializePage(self):
-        self.fileType = self.field("fileType")
+        self.fileType = self.field("fileTypeMPL")
         self.geneTreesEditMPL = self.field("geneTreesEditMPL")
         self.numReticulationsEditMPL = self.field("numReticulationsEditMPL")
     def __init__(self):
@@ -263,7 +261,7 @@ class NetworkMPLPage2(QWizardPage):
         # Optional parameter inputs
         self.thresholdEdit = QLineEdit()
         self.thresholdEdit.setDisabled(True)
-        self.registerField("thresholdEdit", self.thresholdEdit)
+        self.registerField("thresholdEditMPL", self.thresholdEdit)
 
         self.taxamapEdit = QPushButton("Set taxa map")
         self.taxamapEdit.setDisabled(True)
@@ -272,27 +270,27 @@ class NetworkMPLPage2(QWizardPage):
 
         self.sNetEdit = QLineEdit()
         self.sNetEdit.setDisabled(True)
-        self.registerField("sNetEdit", self.sNetEdit)
+        self.registerField("sNetEditMPL", self.sNetEdit)
 
         self.nNetRetEdit = QLineEdit()
         self.nNetRetEdit.setDisabled(True)
         self.nNetRetEdit.setPlaceholderText("1")
-        self.registerField("nNetRetEdit", self.nNetRetEdit)
+        self.registerField("nNetRetEditMPL", self.nNetRetEdit)
 
         self.hybridEdit = QLineEdit()
         self.hybridEdit.setDisabled(True)
-        self.registerField("hybridEdit", self.hybridEdit)
+        self.registerField("hybridEditMPL", self.hybridEdit)
 
         self.wetOpEdit = QLineEdit()
         self.wetOpEdit.setDisabled(True)
         self.wetOpEdit.setPlaceholderText("(0.1,0.1,0.15,0.55,0.15,0.15,2.8)")
         self.wetOpEdit.setMinimumWidth(200)
-        self.registerField("wetOpEdit", self.wetOpEdit)
+        self.registerField("wetOpEditMPL", self.wetOpEdit)
 
         self.numRunEdit = QLineEdit()
         self.numRunEdit.setDisabled(True)
         self.numRunEdit.setPlaceholderText("5")
-        self.registerField("numRunEdit", self.numRunEdit)
+        self.registerField("numRunEditMPL", self.numRunEdit)
 
         # Layouts
         # Layout of each parameter (label and input)
@@ -486,16 +484,7 @@ class NetworkMPLPage2(QWizardPage):
         taxamap.clear()
         #update shared attribute
         self.inputFiles = inputFiles
-        """
-        print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
-        print("at the start of get taxamap")
-        print("self taxamap", self.taxamap)
-        print("taxamap", taxamap)
-        print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
-        print("at the start of get taxamap")
-        print("self inputfile", self.inputFiles)
-        print("inputfile", inputFiles)
-        """
+
         class emptyFileError(Exception):
             pass
 
@@ -536,12 +525,6 @@ class NetworkMPLPage2(QWizardPage):
                 self.taxamap = dialog.getTaxamap()
             #Update global attribute
             taxamap = self.taxamap
-            """
-            print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
-            print("at the end of get taxamap")
-            print("self taxamap", self.taxamap)
-            print("taxamap", taxamap)
-            """
         except emptyFileError:
             QMessageBox.warning(self, "Warning", "Please select a file type and upload data!", QMessageBox.Ok)
             return
@@ -551,15 +534,15 @@ class NetworkMPLPage2(QWizardPage):
 
 class NetworkMPLPage3(QWizardPage):
     def initializePage(self):
-        self.fileType = self.field("fileType")
+        self.fileType = self.field("fileTypeMPL")
         self.geneTreesEditMPL = self.field("geneTreesEditMPL")
         self.numReticulationsEditMPL = self.field("numReticulationsEditMPL")
-        self.thresholdEdit = self.field("thresholdEdit")
-        self.sNetEdit = self.field("sNetEdit")
-        self.nNetRetEdit = self.field("nNetRetEdit")
-        self.hybridEdit = self.field("hybridEdit")
-        self.wetOpEdit = self.field("wetOpEdit")
-        self.numRunEdit = self.field("numRunEdit")
+        self.thresholdEdit = self.field("thresholdEditMPL")
+        self.sNetEdit = self.field("sNetEditMPL")
+        self.nNetRetEdit = self.field("nNetRetEditMPL")
+        self.hybridEdit = self.field("hybridEditMPL")
+        self.wetOpEdit = self.field("wetOpEditMPL")
+        self.numRunEdit = self.field("numRunEditMPL")
 
     def __init__(self):
         super(NetworkMPLPage3, self).__init__()
@@ -641,52 +624,52 @@ class NetworkMPLPage3(QWizardPage):
         self.nNetExamEdit = QLineEdit()
         self.nNetExamEdit.setDisabled(True)
         self.nNetExamEdit.setPlaceholderText("infinity")
-        self.registerField("nNetExamEdit", self.nNetExamEdit)
+        #self.registerField("nNetExamEdit", self.nNetExamEdit)
 
         self.maxDiaEdit = QLineEdit()
         self.maxDiaEdit.setDisabled(True)
         self.maxDiaEdit.setPlaceholderText("infinity")
-        self.registerField("maxDiaEdit", self.maxDiaEdit)
+        #self.registerField("maxDiaEdit", self.maxDiaEdit)
 
         self.retDiaEdit = QLineEdit()
         self.retDiaEdit.setDisabled(True)
         self.retDiaEdit.setPlaceholderText("infinity")
-        self.registerField("retDiaEdit", self.retDiaEdit)        
+        #self.registerField("retDiaEdit", self.retDiaEdit)        
 
         self.maxFEdit = QLineEdit()
         self.maxFEdit.setDisabled(True)
         self.maxFEdit.setPlaceholderText("100")
-        self.registerField("maxFEdit", self.maxFEdit)
+        #self.registerField("maxFEdit", self.maxFEdit)
 
         self.stopCriterionEdit = QLineEdit()
         self.stopCriterionEdit.setDisabled(True)
         self.stopCriterionEdit.setPlaceholderText("(0.01, 0.001)")
-        self.registerField("stopCriterionEdit", self.stopCriterionEdit)
+        #self.registerField("stopCriterionEdit", self.stopCriterionEdit)
 
         self.maxRoundEdit = QLineEdit()
         self.maxRoundEdit.setDisabled(True)
         self.maxRoundEdit.setPlaceholderText("100")
-        self.registerField("maxRoundEdit", self.maxRoundEdit)
+        #self.registerField("maxRoundEdit", self.maxRoundEdit)
 
         self.maxTryPerBrEdit = QLineEdit()
         self.maxTryPerBrEdit.setDisabled(True)
         self.maxTryPerBrEdit.setPlaceholderText("100")
-        self.registerField("maxTryPerBrEdit", self.maxTryPerBrEdit)
+        #self.registerField("maxTryPerBrEdit", self.maxTryPerBrEdit)
 
         self.improveThresEdit = QLineEdit()
         self.improveThresEdit.setDisabled(True)
         self.improveThresEdit.setPlaceholderText("0.001")
-        self.registerField("improveThresEdit", self.improveThresEdit)
+        #self.registerField("improveThresEdit", self.improveThresEdit)
 
         self.maxBlEdit = QLineEdit()
         self.maxBlEdit.setDisabled(True)
         self.maxBlEdit.setPlaceholderText("6")
-        self.registerField("maxBlEdit", self.maxBlEdit)
+        #self.registerField("maxBlEdit", self.maxBlEdit)
 
         self.numProcEdit = QLineEdit()
         self.numProcEdit.setDisabled(True)
         self.numProcEdit.setPlaceholderText("1")
-        self.registerField("numProcEdit", self.numProcEdit)
+        #self.registerField("numProcEdit", self.numProcEdit)
 
         # Launch button
         launchBtn = QPushButton("Generate", self)
@@ -915,24 +898,6 @@ class NetworkMPLPage3(QWizardPage):
         #update shared attributes
         self.inputFiles = inputFiles
         self.taxamap = taxamap
-        """
-        print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
-        print("at generate")
-        print("self taxamap", self.taxamap)
-        print("taxamap", taxamap)
-        
-        print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
-        print("at generate")
-        print("self taxamap", self.taxamap)
-        print("taxamap", taxamap)
-        print("_--------------")
-        print("self inputfiles", self.inputFiles)
-        print("file", inputFiles)
-        """
-        print("--------------")
-        print("At generate")
-        print("what is filetype", self.fileType)
-
         directory = QFileDialog.getSaveFileName(self, "Save File", "/", "Nexus Files (*.nexus)")
 
         class emptyFileError(Exception):
@@ -1129,9 +1094,10 @@ class NetworkMPLPage3(QWizardPage):
                     else:
                         outputFile.write(" -m ")
                         outputFile.write(str(self.nNetExamEdit.text()))
-                        #clear field
-                        self.nNetExamLbl.setChecked(False)
+                        #clear text
                         self.nNetExamEdit.clear()
+                    #clear checkbox
+                    self.nNetExamLbl.setChecked(False)
 
                 # -md maxDiameter command
                 if self.maxDiaLbl.isChecked():
@@ -1140,9 +1106,10 @@ class NetworkMPLPage3(QWizardPage):
                     else:
                         outputFile.write(" -md ")
                         outputFile.write(str(self.maxDiaEdit.text()))
-                        #clear field
-                        self.maxDiaLbl.setChecked(False)
+                        #clear text
                         self.maxDiaEdit.clear()
+                    #clear checkbox
+                    self.maxDiaLbl.setChecked(False)
 
                 # -rd reticulationDiameter command
                 if self.retDiaLbl.isChecked():
@@ -1151,9 +1118,10 @@ class NetworkMPLPage3(QWizardPage):
                     else:
                         outputFile.write(" -rd ")
                         outputFile.write(str(self.retDiaEdit.text()))
-                        #clear field
-                        self.retDiaLbl.setChecked(False)
+                        #clear text
                         self.retDiaEdit.clear()
+                    #clear checkbox
+                    self.retDiaLbl.setChecked(False)
 
                 # -f maxFailure command
                 if self.maxFLbl.isChecked():
@@ -1162,20 +1130,21 @@ class NetworkMPLPage3(QWizardPage):
                     else:
                         outputFile.write(" -f ")
                         outputFile.write(str(self.maxFEdit.text()))
-                        #clear field
-                        self.maxFLbl.setChecked(False)
+                        #clear text
                         self.maxFEdit.clear()
+                    #clear checkbox
+                    self.maxFLbl.setChecked(False)
 
                 # -o command
                 if self.oLabel.isChecked():
                     outputFile.write(" -o")
-                    #clear field
+                    #clear checkbox
                     self.oLabel.setChecked(False)
 
                 # -po command
                 if self.poLabel.isChecked():
                     outputFile.write(" -po")
-                    #clear field
+                    #clear checkbox
                     self.poLabel.setChecked(False)
 
                 # -p command
@@ -1185,9 +1154,10 @@ class NetworkMPLPage3(QWizardPage):
                     else:
                         outputFile.write(" -p ")
                         outputFile.write(str(self.stopCriterionEdit.text()))
-                        #clear field
-                        self.stopCriterionLbl.setChecked(False)
+                        #clear text
                         self.stopCriterionEdit.clear()
+                    #clear checkbox
+                    self.stopCriterionLbl.setChecked(False)
 
                 # -r command
                 if self.maxRoundLbl.isChecked():
@@ -1196,9 +1166,10 @@ class NetworkMPLPage3(QWizardPage):
                     else:
                         outputFile.write(" -r ")
                         outputFile.write(str(self.maxRoundEdit.text()))
-                        #clear field
-                        self.maxRoundLbl.setChecked(False)
+                        #clear text
                         self.maxRoundEdit.clear()
+                    #clear checkbox
+                    self.maxRoundLbl.setChecked(False)
 
                 # -t command
                 if self.maxTryPerBrLbl.isChecked():
@@ -1207,9 +1178,10 @@ class NetworkMPLPage3(QWizardPage):
                     else:
                         outputFile.write(" -t ")
                         outputFile.write(str(self.maxTryPerBrEdit.text()))
-                        #clear field
-                        self.maxTryPerBrLbl.setChecked(False)
+                        #clear text
                         self.maxTryPerBrEdit.clear()
+                    #clear checkbox
+                    self.maxTryPerBrLbl.setChecked(False)
 
                 # -i command
                 if self.improveThresLbl.isChecked():
@@ -1218,9 +1190,10 @@ class NetworkMPLPage3(QWizardPage):
                     else:
                         outputFile.write(" -i ")
                         outputFile.write(str(self.improveThresEdit.text()))
-                        #clear field
-                        self.improveThresLbl.setChecked(False)
+                        #clear text
                         self.improveThresEdit.clear()
+                    #clear checkbox
+                    self.improveThresLbl.setChecked(False)
 
                 # -l command
                 if self.maxBlLbl.isChecked():
@@ -1229,9 +1202,10 @@ class NetworkMPLPage3(QWizardPage):
                     else:
                         outputFile.write(" -l ")
                         outputFile.write(str(self.maxBlEdit.text()))
-                        #clear field
-                        self.maxBlLLbl.setChecked(False)
-                        self.maxBlEdit.clear()
+                        #clear text
+                        self.maxBlEdit.clear
+                    #clear checkbox
+                    self.maxBlLLbl.setChecked(False)
 
                 # -pl numProcessors command
                 if self.numProcLbl.isChecked():
@@ -1240,14 +1214,15 @@ class NetworkMPLPage3(QWizardPage):
                     else:
                         outputFile.write(" -pl ")
                         outputFile.write(str(self.numProcEdit.text()))
-                        #clear field
-                        self.numProcLbl.setChecked(False)
+                        #clear text
                         self.numProcEdit.clear()
+                    #clear checkbox
+                    self.numProcLbl.setChecked(False)
 
                 # -di command
                 if self.diLbl.isChecked():
                     outputFile.write(" -di")
-                    #clear field
+                    #clear checkbox
                     self.diLbl.setChecked()
 
                 # End of NEXUS
@@ -1285,11 +1260,7 @@ class NetworkMPLPage3(QWizardPage):
         """
         After the .nexus file is generated, validate the file by feeding it to PhyloNet.
         Specify -checkParams on command line to make sure PhyloNet checks input without executing the command.
-        """
-        print("Inside validatefile path is", filePath)
-        print("Resource path is ", resource_path("module\\testphlyonet.jar"))
-        print("Is it a string", isinstance(resource_path("module/testphylonet.jar"), str))    
-        print("is it a byte", isinstance(resource_path("module/testphylonet.jar"), bytes))    
+        """  
         try:
             subprocess.check_output(
                 ["java", "-jar", resource_path("module\\testphylonet.jar"),

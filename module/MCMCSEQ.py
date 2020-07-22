@@ -79,7 +79,7 @@ class MCMCSEQPage1(QWizardPage):
 
         
         instructionLabel = QLabel()
-        instructionLabel.setText("Input data: Please upload sequence files. One file per locus")
+        instructionLabel.setText("Input data: Please upload sequence files:\n(One file per locus)")
         instructionLabel.setObjectName("instructionLabel")
 
         # Mandatory parameter labels
@@ -98,7 +98,6 @@ class MCMCSEQPage1(QWizardPage):
 
         fileSelctionBtn = QToolButton()
         fileSelctionBtn.setText("Browse")
-        fileSelctionBtn.setObjectName("fileSelctionBtn")
         fileSelctionBtn.clicked.connect(self.selectFile)
         fileSelctionBtn.setToolTip("Please put sequence alignments of different loci into separate files. \n"
                                    "Each file is considered to contain sequence alignments from only one locus.")
@@ -113,14 +112,13 @@ class MCMCSEQPage1(QWizardPage):
         fileFormatLayout.addWidget(self.nexus)
         fileFormatLayout.addWidget(self.fasta)
 
-        # seqInputLayout = QHBoxLayout()
-        # seqInputLayout.addWidget(self.sequenceFileEdit)
-        # seqInputLayout.addWidget(fileSelctionBtn)
+        seqInputLayout = QHBoxLayout()
+        seqInputLayout.addWidget(self.sequenceFileEdit)
+        seqInputLayout.addWidget(fileSelctionBtn)
 
         seqFileLayout = QVBoxLayout()
         seqFileLayout.addLayout(fileFormatLayout)
-        seqFileLayout.addWidget(self.sequenceFileEdit)
-        seqFileLayout.addWidget(fileSelctionBtn)
+        seqFileLayout.addLayout(seqInputLayout)
 
         # Main layout
         topLevelLayout = QVBoxLayout()
@@ -178,10 +176,11 @@ class MCMCSEQPage1(QWizardPage):
             QMessageBox.warning(self, "Warning", "Please select a file type.", QMessageBox.Ok)
         else:
             if self.nexus.isChecked():
-                fname = QFileDialog.getOpenFileNames(self, 'Open file', '/', 'Nexus files (*.nexus *.nex);;Fasta files (*.fasta)')
+                fname = QFileDialog.getOpenFileNames(self, 'Open file', '/', 'Nexus files (*.nexus *.nex)')
             elif self.fasta.isChecked():
-                fname = QFileDialog.getOpenFileNames(self, 'Open file', '/', 'Fasta files (*.fasta);;Nexus files (*.nexus *.nex)')
-            if fname:
+                fname = QFileDialog.getOpenFileNames(self, 'Open file', '/', 'Fasta files (*.fasta)')
+            #if a file has been inputted, proceed
+            if len(fname[0]) > 0:
                 fileType = fname[1]
                 if self.nexus.isChecked():
                     if fileType != 'Nexus files (*.nexus *.nex)':
@@ -233,19 +232,7 @@ class MCMCSEQPage1(QWizardPage):
                 inputFiles = self.inputFiles
                 loci = self.loci
                 nchar = self.nchar
-                print("Testiiinnnnnng")
-                print("inputfiles is ",inputFiles)
-                print("--------------------------")
-                print("loci is ", loci)
-                print("-----------------------")
-                print("nchar is ", nchar)
-                print("*******************************************")
-                print("The self counterparts")
-                print("self.input ", self.inputFiles)
-                print("----------------------")
-                print("self dot loci is ", self.loci)
-                print("-----------------------")
-                print("self dot nchar is ", self.nchar)
+
 
 class MCMCSEQPage2(QWizardPage):
 
@@ -848,7 +835,6 @@ class MCMCSEQPage4(QWizardPage):
 
         # Launch button
         launchBtn = QPushButton("Generate", self)
-        launchBtn.setObjectName("launchBtn")
         launchBtn.clicked.connect(self.generate)
 
         # Layouts
@@ -890,7 +876,7 @@ class MCMCSEQPage4(QWizardPage):
         btnLayout = QHBoxLayout()
         btnLayout.addStretch(1)
         btnLayout.addWidget(launchBtn)
-        btnLayout.addStretch(1)
+
 
         # Main layout
         topLevelLayout = QVBoxLayout()
@@ -1079,21 +1065,6 @@ class MCMCSEQPage4(QWizardPage):
         self.inputFiles = inputFiles
         self.loci = loci
         self.nchar = nchar
-
-        print("-********************************")
-        print("At generate")
-        print("inputfiles is ",inputFiles)
-        print("--------------------------")
-        print("loci is ", loci)
-        print("-----------------------")
-        print("nchar is ", nchar)
-        print("*******************************************")
-        print("The self counterparts")
-        print("self.input ", self.inputFiles)
-        print("----------------------")
-        print("self dot loci is ", self.loci)
-        print("-----------------------")
-        print("self dot nchar is ", self.nchar)        
 
         directory = QFileDialog.getSaveFileName(
             self, "Save File", "/", "Nexus Files (*.nexus)")
@@ -1398,7 +1369,6 @@ class MCMCSEQPage4(QWizardPage):
         After the .nexus file is generated, validate the file by feeding it to PhyloNet.
         Specify -checkParams on command line to make sure PhyloNet checks input without executing the command.
         """
-        print("filePath is", filePath)
         try:
             subprocess.check_output(
                 ["java", "-jar", resource_path("module/testphylonet.jar"),

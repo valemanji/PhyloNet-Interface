@@ -43,16 +43,17 @@ class Launcher(QtWidgets.QWizard):
     Page_NetworkMP = 8
     Page_NetworkMP2 = 9
     Page_NetworkMP3 = 10
-    Page_NetworkMP4 = 11
-    Page_NetworkML = 12
-    Page_NetworkML2 = 13
-    Page_NetworkML3 = 14
+    Page_NetworkML = 11
+    Page_NetworkML2 = 12
+    Page_NetworkML3 = 13
+    Page_NetworkML4 = 14
     Page_NetworkMPL = 15
     Page_NetworkMPL2 = 16
     Page_NetworkMPL3 = 17
-    Page_MCMCGT = 18
-    Page_MCMCGT2 = 19
-    Page_MCMCGT3 = 20
+    Page_NetworkMPL4 = 18
+    Page_MCMCGT = 19
+    Page_MCMCGT2 = 20
+    Page_MCMCGT3 = 21
 
     def __init__(self):
         super(Launcher, self).__init__()
@@ -69,13 +70,14 @@ class Launcher(QtWidgets.QWizard):
         self.NetworkMP = NetworkMP.NetworkMPPage()
         self.NetworkMP2 = NetworkMP.NetworkMPPage2()
         self.NetworkMP3 = NetworkMP.NetworkMPPage3()
-        self.NetworkMP4 = NetworkMP.NetworkMPPage4()
         self.NetworkML = NetworkML.NetworkMLPage()
         self.NetworkML2 = NetworkML.NetworkMLPage2()
         self.NetworkML3 = NetworkML.NetworkMLPage3()
+        self.NetworkML4 = NetworkML.NetworkMLPage4()
         self.NetworkMPL = NetworkMPL.NetworkMPLPage()
         self.NetworkMPL2 = NetworkMPL.NetworkMPLPage2()
         self.NetworkMPL3 = NetworkMPL.NetworkMPLPage3()
+        self.NetworkMPL4 = NetworkMPL.NetworkMPLPage4()
         self.MCMCGT = MCMCGT.MCMCGTPage()
         self.MCMCGT2 = MCMCGT.MCMCGTPage2()
         self.MCMCGT3 = MCMCGT.MCMCGTPage3()
@@ -95,9 +97,10 @@ class Launcher(QtWidgets.QWizard):
         self.setPage(self.Page_NetworkML2, self.NetworkML2)
         self.setPage(self.Page_NetworkMPL2, self.NetworkMPL2)
         self.setPage(self.Page_NetworkML3, self.NetworkML3)
+        self.setPage(self.Page_NetworkML4, self.NetworkML4)
         self.setPage(self.Page_NetworkMP3, self.NetworkMP3)
         self.setPage(self.Page_NetworkMPL3, self.NetworkMPL3)
-        self.setPage(self.Page_NetworkMP4, self.NetworkMP4)
+        self.setPage(self.Page_NetworkMPL4, self.NetworkMPL4)
         self.setPage(self.Page_MCMCGT2, self.MCMCGT2)
         self.setPage(self.Page_MCMCGT3, self.MCMCGT3)
         self.initUI()
@@ -151,14 +154,16 @@ class Launcher(QtWidgets.QWizard):
             return self.Page_NetworkML2
         elif id == Launcher.Page_NetworkML2:
             return self.Page_NetworkML3
+        elif id == Launcher.Page_NetworkML3:
+            return self.Page_NetworkML4
         elif id == Launcher.Page_NetworkMP2:
             return self.Page_NetworkMP3
-        elif id == Launcher.Page_NetworkMP3:
-            return self.Page_NetworkMP4
         elif id == Launcher.Page_NetworkMPL:
             return self.Page_NetworkMPL2
         elif id == Launcher.Page_NetworkMPL2:
             return self.Page_NetworkMPL3
+        elif id == Launcher.Page_NetworkMPL3:
+            return self.Page_NetworkMPL4
         elif id == Launcher.Page_MCMCGT:
             return self.Page_MCMCGT2
         elif id == Launcher.Page_MCMCGT2:

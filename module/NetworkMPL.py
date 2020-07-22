@@ -534,16 +534,6 @@ class NetworkMPLPage2(QWizardPage):
             return
 
 class NetworkMPLPage3(QWizardPage):
-    def initializePage(self):
-        self.fileType = self.field("fileTypeMPL")
-        self.geneTreesEditMPL = self.field("geneTreesEditMPL")
-        self.numReticulationsEditMPL = self.field("numReticulationsEditMPL")
-        self.thresholdEdit = self.field("thresholdEditMPL")
-        self.sNetEdit = self.field("sNetEditMPL")
-        self.nNetRetEdit = self.field("nNetRetEditMPL")
-        self.hybridEdit = self.field("hybridEditMPL")
-        self.wetOpEdit = self.field("wetOpEditMPL")
-        self.numRunEdit = self.field("numRunEditMPL")
 
     def __init__(self):
         super(NetworkMPLPage3, self).__init__()
@@ -588,93 +578,41 @@ class NetworkMPLPage3(QWizardPage):
 
         self.oLabel = QCheckBox("Optimize branch lengths and inheritance probabilities for every proposed species "
                                 "network during the search", self)
+        self.registerField("oLabelMPL", self.oLabel)
 
         self.poLabel = QCheckBox("Optimize branch lengths and inheritance probabilities for returned species networks "
                                  "after the search", self)
+        self.registerField("poLabelMPL", self.poLabel)
 
         self.stopCriterionLbl = QCheckBox("The original stopping criterion of Brent's algorithm:", self)
         self.stopCriterionLbl.setObjectName("-p")
         self.stopCriterionLbl.stateChanged.connect(self.onChecked)
 
-        self.maxRoundLbl = QCheckBox("Maximum number of rounds to optimize branch lengths for a network topology:", self)
-        self.maxRoundLbl.setObjectName("-r")
-        self.maxRoundLbl.stateChanged.connect(self.onChecked)
-
-        self.maxTryPerBrLbl = QCheckBox("Maximum number of trial per branch in one round to optimize branch lengths for "
-                                        "a network topology:", self)
-        self.maxTryPerBrLbl.setObjectName("-t")
-        self.maxTryPerBrLbl.stateChanged.connect(self.onChecked)
-
-        self.improveThresLbl = QCheckBox("Minimum threshold of improvement to continue the next round of optimization "
-                                         "of branch lengths:", self)
-        self.improveThresLbl.setObjectName("-i")
-        self.improveThresLbl.stateChanged.connect(self.onChecked)
-
-        self.maxBlLbl = QCheckBox("Maximum branch lengths considered:", self)
-        self.maxBlLbl.setObjectName("-l")
-        self.maxBlLbl.stateChanged.connect(self.onChecked)
-
-        self.numProcLbl = QCheckBox("Number of processors:", self)
-        self.numProcLbl.setObjectName("-pl")
-        self.numProcLbl.stateChanged.connect(self.onChecked)
-
-        self.diLbl = QCheckBox("Output Rich Newick string that can be read by Dendroscope.")
-        self.diLbl.stateChanged.connect(self.onChecked)
-
         # Optional parameter inputs
         self.nNetExamEdit = QLineEdit()
         self.nNetExamEdit.setDisabled(True)
         self.nNetExamEdit.setPlaceholderText("infinity")
-        #self.registerField("nNetExamEdit", self.nNetExamEdit)
+        self.registerField("nNetExamEditMPL", self.nNetExamEdit)
 
         self.maxDiaEdit = QLineEdit()
         self.maxDiaEdit.setDisabled(True)
         self.maxDiaEdit.setPlaceholderText("infinity")
-        #self.registerField("maxDiaEdit", self.maxDiaEdit)
+        self.registerField("maxDiaEditMPL", self.maxDiaEdit)
 
         self.retDiaEdit = QLineEdit()
         self.retDiaEdit.setDisabled(True)
         self.retDiaEdit.setPlaceholderText("infinity")
-        #self.registerField("retDiaEdit", self.retDiaEdit)        
+        self.registerField("retDiaEditMPL", self.retDiaEdit)        
 
         self.maxFEdit = QLineEdit()
         self.maxFEdit.setDisabled(True)
         self.maxFEdit.setPlaceholderText("100")
-        #self.registerField("maxFEdit", self.maxFEdit)
+        self.registerField("maxFEditMPL", self.maxFEdit)
 
         self.stopCriterionEdit = QLineEdit()
         self.stopCriterionEdit.setDisabled(True)
         self.stopCriterionEdit.setPlaceholderText("(0.01, 0.001)")
-        #self.registerField("stopCriterionEdit", self.stopCriterionEdit)
-
-        self.maxRoundEdit = QLineEdit()
-        self.maxRoundEdit.setDisabled(True)
-        self.maxRoundEdit.setPlaceholderText("100")
-        #self.registerField("maxRoundEdit", self.maxRoundEdit)
-
-        self.maxTryPerBrEdit = QLineEdit()
-        self.maxTryPerBrEdit.setDisabled(True)
-        self.maxTryPerBrEdit.setPlaceholderText("100")
-        #self.registerField("maxTryPerBrEdit", self.maxTryPerBrEdit)
-
-        self.improveThresEdit = QLineEdit()
-        self.improveThresEdit.setDisabled(True)
-        self.improveThresEdit.setPlaceholderText("0.001")
-        #self.registerField("improveThresEdit", self.improveThresEdit)
-
-        self.maxBlEdit = QLineEdit()
-        self.maxBlEdit.setDisabled(True)
-        self.maxBlEdit.setPlaceholderText("6")
-        #self.registerField("maxBlEdit", self.maxBlEdit)
-
-        self.numProcEdit = QLineEdit()
-        self.numProcEdit.setDisabled(True)
-        self.numProcEdit.setPlaceholderText("1")
-        #self.registerField("numProcEdit", self.numProcEdit)
-
-        # Launch button
-        launchBtn = QPushButton("Generate", self)
-        launchBtn.clicked.connect(self.generate)
+        self.registerField("stopCriterionEditMPL", self.stopCriterionEdit)
 
         # Layouts
         # Layout of each parameter (label and input)
@@ -709,6 +647,244 @@ class NetworkMPLPage3(QWizardPage):
         stopCriterionLayout.addStretch(1)
         stopCriterionLayout.addWidget(self.stopCriterionEdit)
 
+
+        # Main layout
+        topLevelLayout = QVBoxLayout()
+        topLevelLayout.addWidget(titleLabel)
+        topLevelLayout.addWidget(hyperlink)
+        topLevelLayout.addLayout(nNetExamLayout)
+        topLevelLayout.addLayout(maxDiaLayout)
+        topLevelLayout.addLayout(retDiaLayout)
+        topLevelLayout.addLayout(maxFLayout)
+        topLevelLayout.addLayout(oLayout)
+        topLevelLayout.addLayout(poLayout)
+        topLevelLayout.addLayout(stopCriterionLayout)
+
+        self.setLayout(topLevelLayout)
+
+    def aboutMessage(self):
+        msg = QMessageBox()
+        msg.setIcon(QMessageBox.Information)
+        msg.setText("Infers a species network(s) with a specified number of reticulation nodes using maximum likelihood."
+                    " The returned species network(s) will have inferred branch lengths and inheritance probabilities. "
+                    "During the search, branch lengths and inheritance probabilities of a proposed species network can "
+                    "be either sampled or optimized. For the first case, after the search, users can ask the program to "
+                    "further optimize those parameters of the inferred network. To optimize the branch lengths and "
+                    "inheritance probabilities to obtain the maximum likelihood for that species network, we use "
+                    "Richard Brent's algorithm (from his book \"Algorithms for Minimization without Derivatives\", "
+                    "p. 79). The species network and gene trees must be specified in the Rich Newick Format."
+                    "\n\nThe inference can be made using only topologies of gene trees, or using both topologies and "
+                    "branch lengths of gene trees. The latter one requires the input gene trees to be ultrametric. ")
+        font = QFont()
+        font.setPointSize(13)
+        font.setFamily("Times New Roman")
+        font.setBold(False)
+
+        msg.setFont(font)
+        msg.exec_()
+
+    def onChecked(self):
+        """
+        When user clicks the checkbox for an optional command,
+        enable or disable the corresponding text edit.
+        """
+        if self.sender().objectName() == "-b":
+            if self.thresholdEdit.isEnabled():
+                self.thresholdEdit.setDisabled(True)
+            else:
+                self.thresholdEdit.setDisabled(False)
+        elif self.sender().objectName() == "-a":
+            if self.taxamapEdit.isEnabled():
+                self.taxamapEdit.setDisabled(True)
+            else:
+                self.taxamapEdit.setDisabled(False)
+        elif self.sender().objectName() == "-s":
+            if self.sNetEdit.isEnabled():
+                self.sNetEdit.setDisabled(True)
+            else:
+                self.sNetEdit.setDisabled(False)
+        elif self.sender().objectName() == "-n":
+            if self.nNetRetEdit.isEnabled():
+                self.nNetRetEdit.setDisabled(True)
+            else:
+                self.nNetRetEdit.setDisabled(False)
+        elif self.sender().objectName() == "-h":
+            if self.hybridEdit.isEnabled():
+                self.hybridEdit.setDisabled(True)
+            else:
+                self.hybridEdit.setDisabled(False)
+        elif self.sender().objectName() == "-w":
+            if self.wetOpEdit.isEnabled():
+                self.wetOpEdit.setDisabled(True)
+            else:
+                self.wetOpEdit.setDisabled(False)
+        elif self.sender().objectName() == "-x":
+            if self.numRunEdit.isEnabled():
+                self.numRunEdit.setDisabled(True)
+            else:
+                self.numRunEdit.setDisabled(False)
+        elif self.sender().objectName() == "-m":
+            if self.nNetExamEdit.isEnabled():
+                self.nNetExamEdit.setDisabled(True)
+            else:
+                self.nNetExamEdit.setDisabled(False)
+        elif self.sender().objectName() == "-md":
+            if self.maxDiaEdit.isEnabled():
+                self.maxDiaEdit.setDisabled(True)
+            else:
+                self.maxDiaEdit.setDisabled(False)
+        elif self.sender().objectName() == "-rd":
+            if self.retDiaEdit.isEnabled():
+                self.retDiaEdit.setDisabled(True)
+            else:
+                self.retDiaEdit.setDisabled(False)
+        elif self.sender().objectName() == "-f":
+            if self.maxFEdit.isEnabled():
+                self.maxFEdit.setDisabled(True)
+            else:
+                self.maxFEdit.setDisabled(False)
+        elif self.sender().objectName() == "-p":
+            if self.stopCriterionEdit.isEnabled():
+                self.stopCriterionEdit.setDisabled(True)
+            else:
+                self.stopCriterionEdit.setDisabled(False)
+        elif self.sender().objectName() == "-r":
+            if self.maxRoundEdit.isEnabled():
+                self.maxRoundEdit.setDisabled(True)
+            else:
+                self.maxRoundEdit.setDisabled(False)
+        elif self.sender().objectName() == "-t":
+            if self.maxTryPerBrEdit.isEnabled():
+                self.maxTryPerBrEdit.setDisabled(True)
+            else:
+                self.maxTryPerBrEdit.setDisabled(False)
+        elif self.sender().objectName() == "-i":
+            if self.improveThresEdit.isEnabled():
+                self.improveThresEdit.setDisabled(True)
+            else:
+                self.improveThresEdit.setDisabled(False)
+        elif self.sender().objectName() == "-l":
+            if self.maxBlEdit.isEnabled():
+                self.maxBlEdit.setDisabled(True)
+            else:
+                self.maxBlEdit.setDisabled(False)
+        elif self.sender().objectName() == "-pl":
+            if self.numProcEdit.isEnabled():
+                self.numProcEdit.setDisabled(True)
+            else:
+                self.numProcEdit.setDisabled(False)
+        else:
+            pass
+
+    def link(self, linkStr):
+        """
+        Open the website of PhyloNet if user clicks on the hyperlink.
+        """
+        QDesktopServices.openUrl(QtCore.QUrl(linkStr))
+
+
+class NetworkMPLPage4(QWizardPage):
+    def initializePage(self):
+        self.fileType = self.field("fileTypeMPL")
+        self.geneTreesEditMPL = self.field("geneTreesEditMPL")
+        self.numReticulationsEditMPL = self.field("numReticulationsEditMPL")
+        self.thresholdEdit = self.field("thresholdEditMPL")
+        self.sNetEdit = self.field("sNetEditMPL")
+        self.nNetRetEdit = self.field("nNetRetEditMPL")
+        self.hybridEdit = self.field("hybridEditMPL")
+        self.wetOpEdit = self.field("wetOpEditMPL")
+        self.numRunEdit = self.field("numRunEditMPL")
+
+        self.nNetExamEdit = self.field("nNetExamEditMPL")
+        self.maxDiaEdit = self.field("maxDiaEditMPL")
+        self.maxFEdit = self.field("maxFEditMPL")
+        self.retDiaEdit = self.field("retDiaEditMPL")
+        self.stopCriterionEdit = self.field("stopCriterionEditMPL")
+        self.oLabel = self.field("oLabelMPL")
+        self.poLabel = self.field("poLabelMPL")
+
+    def __init__(self):
+        super(NetworkMPLPage4, self).__init__()
+
+        self.inputFiles = inputFiles
+        self.geneTreeNames = geneTreesNames
+        self.taxamap = taxamap
+        self.multiTreesPerLocus = False
+
+        self.initUI()
+
+    def initUI(self):
+        """
+        Initialize GUI.
+        """
+        # Title (InferNetwork_MP)
+        titleLabel = titleHeader("InferNetwork_MPL")
+
+        hyperlink = QLabel()
+        hyperlink.setText('Details of this method can be found '
+                          '<a href="https://wiki.rice.edu/confluence/display/PHYLONET/InferNetwork_MPL">'
+                          'here</a>.')
+        hyperlink.linkActivated.connect(self.link)
+        hyperlink.setObjectName("detailsLink")
+
+        # Optional parameter labels
+        self.maxRoundLbl = QCheckBox("Maximum number of rounds to optimize branch lengths for a network topology:", self)
+        self.maxRoundLbl.setObjectName("-r")
+        self.maxRoundLbl.stateChanged.connect(self.onChecked)
+
+        self.maxTryPerBrLbl = QCheckBox("Maximum number of trial per branch in one round to optimize branch lengths for "
+                                        "a network topology:", self)
+        self.maxTryPerBrLbl.setObjectName("-t")
+        self.maxTryPerBrLbl.stateChanged.connect(self.onChecked)
+
+        self.improveThresLbl = QCheckBox("Minimum threshold of improvement to continue the next round of optimization "
+                                         "of branch lengths:", self)
+        self.improveThresLbl.setObjectName("-i")
+        self.improveThresLbl.stateChanged.connect(self.onChecked)
+
+        self.maxBlLbl = QCheckBox("Maximum branch lengths considered:", self)
+        self.maxBlLbl.setObjectName("-l")
+        self.maxBlLbl.stateChanged.connect(self.onChecked)
+
+        self.numProcLbl = QCheckBox("Number of processors:", self)
+        self.numProcLbl.setObjectName("-pl")
+        self.numProcLbl.stateChanged.connect(self.onChecked)
+
+        self.diLbl = QCheckBox("Output Rich Newick string that can be read by Dendroscope.")
+        self.diLbl.stateChanged.connect(self.onChecked)
+
+        # Optional parameter inputs
+        self.maxRoundEdit = QLineEdit()
+        self.maxRoundEdit.setDisabled(True)
+        self.maxRoundEdit.setPlaceholderText("100")
+        #self.registerField("maxRoundEdit", self.maxRoundEdit)
+
+        self.maxTryPerBrEdit = QLineEdit()
+        self.maxTryPerBrEdit.setDisabled(True)
+        self.maxTryPerBrEdit.setPlaceholderText("100")
+        #self.registerField("maxTryPerBrEdit", self.maxTryPerBrEdit)
+
+        self.improveThresEdit = QLineEdit()
+        self.improveThresEdit.setDisabled(True)
+        self.improveThresEdit.setPlaceholderText("0.001")
+        #self.registerField("improveThresEdit", self.improveThresEdit)
+
+        self.maxBlEdit = QLineEdit()
+        self.maxBlEdit.setDisabled(True)
+        self.maxBlEdit.setPlaceholderText("6")
+        #self.registerField("maxBlEdit", self.maxBlEdit)
+
+        self.numProcEdit = QLineEdit()
+        self.numProcEdit.setDisabled(True)
+        self.numProcEdit.setPlaceholderText("1")
+        #self.registerField("numProcEdit", self.numProcEdit)
+
+        # Launch button
+        launchBtn = QPushButton("Generate", self)
+        launchBtn.clicked.connect(self.generate)
+
+        # Layouts
+        # Layout of each parameter (label and input)
         maxRoundLayout = QHBoxLayout()
         maxRoundLayout.addWidget(self.maxRoundLbl)
         maxRoundLayout.addStretch(1)
@@ -744,13 +920,8 @@ class NetworkMPLPage3(QWizardPage):
 
         # Main layout
         topLevelLayout = QVBoxLayout()
-        topLevelLayout.addLayout(nNetExamLayout)
-        topLevelLayout.addLayout(maxDiaLayout)
-        topLevelLayout.addLayout(retDiaLayout)
-        topLevelLayout.addLayout(maxFLayout)
-        topLevelLayout.addLayout(oLayout)
-        topLevelLayout.addLayout(poLayout)
-        topLevelLayout.addLayout(stopCriterionLayout)
+        topLevelLayout.addWidget(titleLabel)
+        topLevelLayout.addWidget(hyperlink)
         topLevelLayout.addLayout(maxRoundLayout)
         topLevelLayout.addLayout(maxTryPerBrLayout)
         topLevelLayout.addLayout(improveThresLayout)
@@ -1089,76 +1260,61 @@ class NetworkMPLPage3(QWizardPage):
                     self.numRunEdit = ""
 
                 # -m maxNetExamined command
-                if self.nNetExamLbl.isChecked():
-                    if self.nNetExamEdit.text() == "":
-                        pass
-                    else:
-                        outputFile.write(" -m ")
-                        outputFile.write(str(self.nNetExamEdit.text()))
-                        #clear text
-                        self.nNetExamEdit.clear()
-                    #clear checkbox
-                    self.nNetExamLbl.setChecked(False)
+                if self.nNetExamEdit == "":
+                    pass
+                else:
+                    outputFile.write(" -m ")
+                    outputFile.write(self.nNetExamEdit)
+                    #clear text
+                    self.nNetExamEdit = ""
 
                 # -md maxDiameter command
-                if self.maxDiaLbl.isChecked():
-                    if self.maxDiaEdit.text() == "":
-                        pass
-                    else:
-                        outputFile.write(" -md ")
-                        outputFile.write(str(self.maxDiaEdit.text()))
-                        #clear text
-                        self.maxDiaEdit.clear()
-                    #clear checkbox
-                    self.maxDiaLbl.setChecked(False)
+                if self.maxDiaEdit == "":
+                    pass
+                else:
+                    outputFile.write(" -md ")
+                    outputFile.write(self.maxDiaEdit)
+                    #clear text
+                    self.maxDiaEdit = ""
 
                 # -rd reticulationDiameter command
-                if self.retDiaLbl.isChecked():
-                    if self.retDiaEdit.text() == "":
-                        pass
-                    else:
-                        outputFile.write(" -rd ")
-                        outputFile.write(str(self.retDiaEdit.text()))
-                        #clear text
-                        self.retDiaEdit.clear()
-                    #clear checkbox
-                    self.retDiaLbl.setChecked(False)
+                if self.retDiaEdit == "":
+                    pass
+                else:
+                    outputFile.write(" -rd ")
+                    outputFile.write(self.retDiaEdit)
+                    #clear text
+                    self.retDiaEdit = ""
 
                 # -f maxFailure command
-                if self.maxFLbl.isChecked():
-                    if self.maxFEdit.text() == "":
-                        pass
-                    else:
-                        outputFile.write(" -f ")
-                        outputFile.write(str(self.maxFEdit.text()))
-                        #clear text
-                        self.maxFEdit.clear()
-                    #clear checkbox
-                    self.maxFLbl.setChecked(False)
+                if self.maxFEdit == "":
+                    pass
+                else:
+                    outputFile.write(" -f ")
+                    outputFile.write(self.maxFEdit)
+                    #clear text
+                    self.maxFEdit = ""
 
                 # -o command
-                if self.oLabel.isChecked():
+                if self.oLabel:
                     outputFile.write(" -o")
                     #clear checkbox
-                    self.oLabel.setChecked(False)
+                    self.oLabel = (False)
 
                 # -po command
-                if self.poLabel.isChecked():
+                if self.poLabel:
                     outputFile.write(" -po")
                     #clear checkbox
-                    self.poLabel.setChecked(False)
+                    self.poLabel = False
 
                 # -p command
-                if self.stopCriterionLbl.isChecked():
-                    if self.stopCriterionEdit.text() == "":
-                        pass
-                    else:
-                        outputFile.write(" -p ")
-                        outputFile.write(str(self.stopCriterionEdit.text()))
-                        #clear text
-                        self.stopCriterionEdit.clear()
-                    #clear checkbox
-                    self.stopCriterionLbl.setChecked(False)
+                if self.stopCriterionEdit == "":
+                    pass
+                else:
+                    outputFile.write(" -p ")
+                    outputFile.write(self.stopCriterionEdit)
+                    #clear text
+                    self.stopCriterionEdit = ""
 
                 # -r command
                 if self.maxRoundLbl.isChecked():

@@ -490,6 +490,15 @@ class NetworkMPPage2(QWizardPage):
 
 
 class NetworkMPPage3(QWizardPage):
+    def initializePage(self):
+        self.geneTreesEditMP = self.field("geneTreesEditMP")
+        self.numReticulationsEditMP = self.field("numReticulationsEditMP")
+        self.thresholdEdit = self.field("thresholdEditMP")
+        self.sNetEdit = self.field("sNetEditMP")
+        self.nNetRetEdit = self.field("nNetRetEditMP")
+        self.nNetExamEdit = self.field("nNetExamEditMP")
+        self.maxDiaEdit = self.field("maxDiaEditMP")
+        self.fileType = self.field("fileTypeMP")
     def __init__(self):
 
         super(NetworkMPPage3, self).__init__()
@@ -541,8 +550,12 @@ class NetworkMPPage3(QWizardPage):
         self.numProcLbl.setObjectName("-pl")
         self.numProcLbl.stateChanged.connect(self.onChecked)
 
-        # Inputs
+                
+        self.diLbl = QCheckBox(
+            "Output Rich Newick string that can be read by Dendroscope.")
+        self.diLbl.stateChanged.connect(self.onChecked)
 
+        # Inputs
         self.hybridEdit = QLineEdit()
         self.hybridEdit.setDisabled(True)
         self.registerField("hybridEditMP", self.hybridEdit)
@@ -568,8 +581,7 @@ class NetworkMPPage3(QWizardPage):
         self.numProcEdit.setPlaceholderText("1")
         self.registerField("numProcEditMP", self.numProcEdit)
 
-        #
-
+        #Layouts
         hybridLayout = QHBoxLayout()
         hybridLayout.addWidget(self.hybridLbl)
         hybridLayout.addWidget(self.hybridEdit)
@@ -594,6 +606,18 @@ class NetworkMPPage3(QWizardPage):
         numProcLayout.addStretch(1)
         numProcLayout.addWidget(self.numProcEdit)
 
+        # Launch button
+        launchBtn = QPushButton("Generate", self)
+        launchBtn.clicked.connect(self.generate)
+
+        diLayout = QHBoxLayout()
+        diLayout.addWidget(self.diLbl)
+
+        btnLayout = QHBoxLayout()
+        btnLayout.addStretch(1)
+        btnLayout.addWidget(launchBtn)
+
+
         #main level layout
         topLevelLayout = QVBoxLayout()
         topLevelLayout.addWidget(titleLabel)
@@ -603,6 +627,8 @@ class NetworkMPPage3(QWizardPage):
         topLevelLayout.addLayout(maxFLayout)
         topLevelLayout.addLayout(numRunLayout)
         topLevelLayout.addLayout(numProcLayout)
+        topLevelLayout.addLayout(diLayout)
+        topLevelLayout.addLayout(btnLayout)
         self.setLayout(topLevelLayout)
 
     def aboutMessage(self):
@@ -723,174 +749,6 @@ class NetworkMPPage3(QWizardPage):
             else:
                 self.nexus.setChecked(False)
                 self.newick.setChecked(True)
-
-class NetworkMPPage4(QWizardPage):
-
-    def initializePage(self):
-        self.geneTreesEditMP = self.field("geneTreesEditMP")
-        self.numReticulationsEditMP = self.field("numReticulationsEditMP")
-        self.thresholdEdit = self.field("thresholdEditMP")
-        self.sNetEdit = self.field("sNetEditMP")
-        self.nNetRetEdit = self.field("nNetRetEditMP")
-        self.nNetExamEdit = self.field("nNetExamEditMP")
-        self.maxDiaEdit = self.field("maxDiaEditMP")
-        self.hybridEdit = self.field("hybridEditMP")
-        self.wetOpEdit = self.field("wetOpEditMP")
-        self.maxFEdit = self.field("maxFEditMP")
-        self.numRunEdit = self.field("numRunEditMP")
-        self.numProcEdit = self.field("numProcEditMP")
-        self.fileType = self.field("fileTypeMP")
-
-    def __init__(self):
-
-        super(NetworkMPPage4, self).__init__()
-
-        self.inputFiles = inputFiles
-        self.geneTreeNames = geneTreeNames
-        self.taxamap = taxamap
-
-        self.initUI()
-
-    def initUI(self):
-        """
-        Initialize GUI.
-        """
-
-        # Title (InferNetwork_MP)
-        titleLabel = titleHeader("InferNetwork_MP")
-
-        hyperlink = QLabel()
-        hyperlink.setText('Details of this method can be found '
-                          '<a href="https://wiki.rice.edu/confluence/display/PHYLONET/InferNetwork_MP">'
-                          'here</a>.')
-        hyperlink.linkActivated.connect(self.link)
-        hyperlink.setObjectName("detailsLink")
-
-        optionalLabel = QLabel()
-        optionalLabel.setObjectName("instructionLabel")
-        optionalLabel.setText("Input Options")
-
-        # Labels
-        self.diLbl = QCheckBox(
-            "Output Rich Newick string that can be read by Dendroscope.")
-        self.diLbl.stateChanged.connect(self.onChecked)
-
-        # Launch button
-        launchBtn = QPushButton("Generate", self)
-        launchBtn.clicked.connect(self.generate)
-
-        diLayout = QHBoxLayout()
-        diLayout.addWidget(self.diLbl)
-
-        btnLayout = QHBoxLayout()
-        btnLayout.addStretch(1)
-        btnLayout.addWidget(launchBtn)
-
-        topLevelLayout = QVBoxLayout()
-        topLevelLayout.addWidget(titleLabel)
-        topLevelLayout.addWidget(hyperlink)
-        topLevelLayout.addLayout(diLayout)
-        topLevelLayout.addLayout(btnLayout)
-
-        self.setLayout(topLevelLayout)
-
-    def aboutMessage(self):
-        msg = QMessageBox()
-        msg.setIcon(QMessageBox.Information)
-        msg.setText("Infers a species network(s) with a specified number of reticulation nodes under MDC criterion "
-                    "using parsimony-based method. The reticulation nodes in the inferred network will have inferred "
-                    "inheritance probabilities associated with them. To find the optimal network, steepest descent is "
-                    "used. The species network and gene trees must be specified in the Rich Newick Format. However, "
-                    "only topologies of them are used in the method.")
-        font = QFont()
-        font.setPointSize(13)
-        font.setFamily("Times New Roman")
-        font.setBold(False)
-
-        msg.setFont(font)
-        msg.exec_()
-
-    def link(self, linkStr):
-        """
-        Open the website of PhyloNet if user clicks on the hyperlink.
-        """
-        QDesktopServices.openUrl(QtCore.QUrl(linkStr))
-
-    def __inverseMapping(self, map):
-        """
-        Convert a mapping from taxon to species to a mapping from species to a list of taxon.
-        """
-        o = {}
-        for k, v in map.items():
-            if v in o:
-                o[v].append(k)
-            else:
-                o[v] = [k]
-        return o
-
-    def onChecked(self):
-        """
-        When user clicks the checkbox for an optional command,
-        enable or disable the corresponding text edit.
-        """
-        if self.sender().objectName() == "-b":
-            if self.thresholdEdit.isEnabled():
-                self.thresholdEdit.setDisabled(True)
-            else:
-                self.thresholdEdit.setDisabled(False)
-        elif self.sender().objectName() == "-a":
-            if self.taxamapEdit.isEnabled():
-                self.taxamapEdit.setDisabled(True)
-            else:
-                self.taxamapEdit.setDisabled(False)
-        elif self.sender().objectName() == "-s":
-            if self.sNetEdit.isEnabled():
-                self.sNetEdit.setDisabled(True)
-            else:
-                self.sNetEdit.setDisabled(False)
-        elif self.sender().objectName() == "-n":
-            if self.nNetRetEdit.isEnabled():
-                self.nNetRetEdit.setDisabled(True)
-            else:
-                self.nNetRetEdit.setDisabled(False)
-        elif self.sender().objectName() == "-m":
-            if self.nNetExamEdit.isEnabled():
-                self.nNetExamEdit.setDisabled(True)
-            else:
-                self.nNetExamEdit.setDisabled(False)
-        elif self.sender().objectName() == "-d":
-            if self.maxDiaEdit.isEnabled():
-                self.maxDiaEdit.setDisabled(True)
-            else:
-                self.maxDiaEdit.setDisabled(False)
-        elif self.sender().objectName() == "-h":
-            if self.hybridEdit.isEnabled():
-                self.hybridEdit.setDisabled(True)
-            else:
-                self.hybridEdit.setDisabled(False)
-        elif self.sender().objectName() == "-w":
-            if self.wetOpEdit.isEnabled():
-                self.wetOpEdit.setDisabled(True)
-            else:
-                self.wetOpEdit.setDisabled(False)
-        elif self.sender().objectName() == "-f":
-            if self.maxFEdit.isEnabled():
-                self.maxFEdit.setDisabled(True)
-            else:
-                self.maxFEdit.setDisabled(False)
-        elif self.sender().objectName() == "-x":
-            if self.numRunEdit.isEnabled():
-                self.numRunEdit.setDisabled(True)
-            else:
-                self.numRunEdit.setDisabled(False)
-        elif self.sender().objectName() == "-pl":
-            if self.numProcEdit.isEnabled():
-                self.numProcEdit.setDisabled(True)
-            else:
-                self.numProcEdit.setDisabled(False)
-        else:
-            pass
-
 
     def generate(self):
         """
@@ -1039,49 +897,64 @@ class NetworkMPPage4(QWizardPage):
                     self.maxDiaEdit = ""
 
                 # -h {s1 [, s2...]} command
-                if self.hybridEdit == "":
-                    pass
-                else:
-                    outputFile.write(" -h ")
-                    outputFile.write(self.hybridEdit)
-                    #clear field
-                    self.hybridEdit = ""
+                if self.hybridLbl.isChecked():
+                    if self.hybridLbl.text() == "":
+                        pass
+                    else:
+                        outputFile.write(" -h ")
+                        outputFile.write(str(self.hybridEdit.text()))
+                        #clear text
+                        self.hybridEdit.clear()
+                    #clear checkbox
+                    self.hybridLbl.setChecked(False)
 
                 # -w (w1, ..., w6) command
-                if self.wetOpEdit == "":
-                    pass
-                else:
-                    outputFile.write(" -w ")
-                    outputFile.write(self.wetOpEdit)
-                    #clear field
-                    self.wetOpEdit = ""
+                if self.wetOpLbl.isChecked():
+                    if self.wetOpEdit.text() == "":
+                        pass
+                    else:
+                        outputFile.write(" -w ")
+                        outputFile.write(str(self.wetOpEdit.text()))
+                        #clear text
+                        self.wetOpEdit.clear()
+                    #clear checkbox
+                    self.wetOpLbl.setChecked(False)
                     
                 # -f maxFailure command
-                if self.maxFEdit == "":
-                    pass
-                else:
-                    outputFile.write(" -f ")
-                    outputFile.write(self.maxFEdit)
-                    #clear field
-                    self.maxFEdit = ""
+                if self.maxFLbl.isChecked():
+                    if self.maxFEdit.text() == "":
+                        pass
+                    else:
+                        outputFile.write(" -f ")
+                        outputFile.write(str(self.maxFEdit.text()))
+                        #clear text
+                        self.maxFEdit.clear()
+                    #clear checkbox
+                    self.maxFLbl.setChecked(False)
 
                 # -x numRuns command
-                if self.numRunEdit == "":
-                    pass
-                else:
-                    outputFile.write(" -x ")
-                    outputFile.write(self.numRunEdit)
-                    #clear field
-                    self.numRunEdit = ""
+                if self.numRunLbl.isChecked():
+                    if self.numRunEdit.text() == "":
+                        pass
+                    else:
+                        outputFile.write(" -x ")
+                        outputFile.write(str(self.numRunEdit.text()))
+                        #clear text
+                        self.numRunEdit.clear()
+                    #clear checkbox
+                    self.numRunLbl.setChecked(False)
 
                 # -pl numProcessors command
-                if self.numProcEdit == "":
-                    pass
-                else:
-                    outputFile.write(" -pl ")
-                    outputFile.write(self.numProcEdit)
-                    #clear field
-                    self.numProcEdit = ""
+                if self.numProcLbl.isChecked():
+                    if self.numProcEdit.text() == "":
+                        pass
+                    else:
+                        outputFile.write(" -pl ")
+                        outputFile.write(str(self.numProcEdit.text()))
+                        #clear text
+                        self.numProcEdit.clear()
+                    #clear checkbox
+                    self.numProcLbl.setChecked(False)
 
                 # -di command
                 if self.diLbl.isChecked():

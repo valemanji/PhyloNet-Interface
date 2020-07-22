@@ -828,7 +828,6 @@ class MCMCGTPage3(QWizardPage):
                     #clear checkbox
                     self.numProcLbl.setChecked(False)
 
-
                 # -tp temperatureList command
                 if self.tempListLbl.isChecked():
                     if self.tempListEdit.text() == "":

@@ -1339,6 +1339,7 @@ class MCMCSEQPage4(QWizardPage):
             self.ListOfDiploid = []
             self.sgtFiles = []
             self.sgtFileEdit.clear()
+            self.successMessage()
 
             # Validate the generated file.
             self.validateFile(path)
@@ -1363,6 +1364,31 @@ class MCMCSEQPage4(QWizardPage):
             self.sgtFileEdit.clear()
             QMessageBox.warning(self, "Warning", str(e), QMessageBox.Ok)
             return
+
+    def successMessage(self):
+        msg = QDialog()
+        msg.setStyleSheet("QDialog{min-width: 500px; min-height: 500px;}")
+        msg.setWindowTitle("Phylonet") 
+        msg.setWindowIcon(QIcon("logo.png"))
+        flags = QtCore.Qt.WindowFlags(QtCore.Qt.CustomizeWindowHint | QtCore.Qt.WindowCloseButtonHint )
+        msg.setWindowFlags(flags)
+        msg.setObjectName("successMessage")
+
+        vbox = QVBoxLayout()
+
+        ico = QLabel()
+        complete = QPixmap("module/complete.svg")
+        ico.setPixmap(complete)
+        buttonBox = QDialogButtonBox(QDialogButtonBox.Ok)
+        buttonBox.clicked.connect(msg.accept)
+
+        vbox.addWidget(ico, alignment=QtCore.Qt.AlignCenter)
+        vbox.addWidget(buttonBox)
+        vbox.setSpacing(0)
+ 
+        msg.setLayout(vbox)
+        msg.setModal(1)
+        msg.exec_()
 
     def validateFile(self, filePath):
         """

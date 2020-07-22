@@ -2,7 +2,9 @@ import sys
 import os
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
-from PyQt5 import QtCore
+from PyQt5 import QtWidgets, QtCore, QtLocation
+from PyQt5.QtCore import Qt, pyqtSignal, pyqtSlot, QObject, QTimer, QThread
+from PyQt5.QtGui import QIcon, QPixmap
 import dendropy
 import datetime
 import subprocess
@@ -154,6 +156,12 @@ class NetworkMPPage(QWizardPage):
             else:
                 self.nexus.setChecked(False)
                 self.newick.setChecked(True)
+
+    def clear(self):
+        self.geneTreesEditMP.clear()
+        self.numReticulationsEditMP.clear()
+        self.nexus.setChecked(False)
+        self.newick.setChecked(False)
 
     def selectFile(self):
         """
@@ -430,6 +438,19 @@ class NetworkMPPage2(QWizardPage):
         """
         QDesktopServices.openUrl(QtCore.QUrl(linkStr))
 
+    def clear(self):
+        self.thresholdLbl.setChecked(False)
+        self.thresholdEdit.clear()
+        self.taxamapLbl.setChecked(False)
+        self.sNetLbl.setChecked(False)
+        self.sNetEdit.clear()
+        self.nNetRetLbl.setChecked(False)
+        self.nNetRetEdit.clear()
+        self.nNetExamLbl.setChecked(False)
+        self.nNetExamEdit.clear()
+        self.maxDiaLbl.setChecked(False)
+        self.maxDiaEdit.clear()
+
     def getTaxamap(self):
         """
         When user clicks "Set taxa map", open up TaxamapDlg for user input
@@ -490,6 +511,7 @@ class NetworkMPPage2(QWizardPage):
 
 
 class NetworkMPPage3(QWizardPage):
+
     def initializePage(self):
         self.geneTreesEditMP = self.field("geneTreesEditMP")
         self.numReticulationsEditMP = self.field("numReticulationsEditMP")
@@ -499,6 +521,7 @@ class NetworkMPPage3(QWizardPage):
         self.nNetExamEdit = self.field("nNetExamEditMP")
         self.maxDiaEdit = self.field("maxDiaEditMP")
         self.fileType = self.field("fileTypeMP")
+
     def __init__(self):
 
         super(NetworkMPPage3, self).__init__()
@@ -506,6 +529,7 @@ class NetworkMPPage3(QWizardPage):
         self.inputFiles = inputFiles
         self.geneTreeNames = geneTreeNames
         self.taxamap = taxamap
+        #self.isComplete = False
 
         self.initUI()
 
@@ -513,7 +537,7 @@ class NetworkMPPage3(QWizardPage):
         """
         Initialize GUI.
         """
-
+        #isComplete = QtCore.pyqtSignal(bool)
         # Title (InferNetwork_MP)
         titleLabel = titleHeader("InferNetwork_MP")
 
@@ -970,7 +994,10 @@ class NetworkMPPage3(QWizardPage):
             self.inputFiles = []
             self.taxamap = {}
             self.geneTreesEditMP = ""
+            #self.isComplete = True
+            #self.isComplete.emit(True)
 
+            self.successMessage()
             # Validate the generated file.
             self.validateFile(path)
 
@@ -993,6 +1020,31 @@ class NetworkMPPage3(QWizardPage):
             self.geneTreesEditMP = ""
             QMessageBox.warning(self, "Warning", str(e), QMessageBox.Ok)
             return
+
+    def successMessage(self):
+        msg = QDialog()
+        msg.setStyleSheet("QDialog{min-width: 500px; min-height: 500px;}")
+        msg.setWindowTitle("Phylonet") 
+        msg.setWindowIcon(QIcon("logo.png"))
+        flags = QtCore.Qt.WindowFlags(QtCore.Qt.CustomizeWindowHint | QtCore.Qt.WindowCloseButtonHint )
+        msg.setWindowFlags(flags)
+        msg.setObjectName("successMessage")
+
+        vbox = QVBoxLayout()
+
+        ico = QLabel()
+        complete = QPixmap("module/complete.svg")
+        ico.setPixmap(complete)
+        buttonBox = QDialogButtonBox(QDialogButtonBox.Ok)
+        buttonBox.clicked.connect(msg.accept)
+
+        vbox.addWidget(ico, alignment=QtCore.Qt.AlignCenter)
+        vbox.addWidget(buttonBox)
+        vbox.setSpacing(0)
+ 
+        msg.setLayout(vbox)
+        msg.setModal(1)
+        msg.exec_()
 
     def validateFile(self, filePath):
         """

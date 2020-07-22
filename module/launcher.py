@@ -119,6 +119,16 @@ class Launcher(QtWidgets.QWizard):
         self.setWindowFlags(flags)
         self.setModal(1)
 
+        print("What response", self.NetworkMP3.isComplete)
+
+        #self.NetworkMP3.isComplete.connect(lambda: print(self.NetworkMP3.isComplete))
+        #print(self.NetworkMP3.isComplete)
+        #NetworkMP.NetworkMPPage3().isComplete.connect(lambda: self.clearMP)
+
+    def clearMP(self):
+        self.NetworkMP.clear()
+        self.NetworkMP2.clear()
+
     def nextId(self):
         id = self.currentId()
         if id == Launcher.Page_Intro:

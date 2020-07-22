@@ -158,9 +158,9 @@ class MCMCGTPage(QWizardPage):
             QMessageBox.warning(self, "Warning", "Please select a file type.", QMessageBox.Ok)
         else:
             if self.nexus.isChecked():
-                fname = QFileDialog.getOpenFileNames(self, 'Open file', '/', 'Nexus files (*.nexus *.nex);;Newick files (*.newick)')
+                fname = QFileDialog.getOpenFileNames(self, 'Open file', '/', 'Nexus files (*.nexus *.nex)')
             elif self.newick.isChecked():
-                fname = QFileDialog.getOpenFileNames(self, 'Open file', '/', 'Newick files (*.newick);;Nexus files (*.nexus *.nex)') 
+                fname = QFileDialog.getOpenFileNames(self, 'Open file', '/', 'Newick files (*.newick)') 
             #if a file has been inputted, proceed
             if len(fname[0]) > 0:
                 fileType = fname[1]
@@ -674,10 +674,10 @@ class MCMCGTPage3(QWizardPage):
             pass
 
         try:
-            if (not self.nexus.isChecked()) and (not self.newick.isChecked()):
-                raise emptyFileError
             if len(self.inputFiles) == 0:
                 raise emptyFileError
+            if directory[0] == "":
+                raise emptyDesinationError
 
             # the file format to read
             if self.fileType == 'Nexus files (*.nexus *.nex)':

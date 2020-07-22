@@ -166,9 +166,9 @@ class NetworkMLPage(QWizardPage):
             QMessageBox.warning(self, "Warning", "Please select a file type.", QMessageBox.Ok)
         else:
             if self.nexus.isChecked():
-                fname = QFileDialog.getOpenFileNames(self, 'Open file', '/', 'Nexus files (*.nexus *.nex);;Newick files (*.newick)')
+                fname = QFileDialog.getOpenFileNames(self, 'Open file', '/', 'Nexus files (*.nexus *.nex)')
             elif self.newick.isChecked():
-                fname = QFileDialog.getOpenFileNames(self, 'Open file', '/', 'Newick files (*.newick);;Nexus files (*.nexus *.nex)') 
+                fname = QFileDialog.getOpenFileNames(self, 'Open file', '/', 'Newick files (*.newick)') 
             
             #if a file has been inputted, proceed
             if len(fname[0]) > 0:
@@ -1222,7 +1222,7 @@ class NetworkMLPage3(QWizardPage):
                         #clear text
                         self.maxBlEdit.clear()
                     #clear checkbox
-                    self.maxBlLLbl.setChecked(False)
+                    self.maxBlLbl.setChecked(False)
 
                 # -pl numProcessors command
                 if self.numProcLbl.isChecked():

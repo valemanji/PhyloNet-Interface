@@ -441,11 +441,6 @@ class NetworkMPLPage2(QWizardPage):
                 self.retDiaEdit.setDisabled(True)
             else:
                 self.retDiaEdit.setDisabled(False)               
-        elif self.sender().objectName() == "-f":
-            if self.maxFEdit.isEnabled():
-                self.maxFEdit.setDisabled(True)
-            else:
-                self.maxFEdit.setDisabled(False)
         elif self.sender().objectName() == "-p":
             if self.stopCriterionEdit.isEnabled():
                 self.stopCriterionEdit.setDisabled(True)
@@ -601,10 +596,6 @@ class NetworkMPLPage3(QWizardPage):
         self.retDiaLbl.setObjectName("-rd")
         self.retDiaLbl.stateChanged.connect(self.onChecked)
 
-        self.maxFLbl = QCheckBox("Maximum consecutive number of failures for hill climbing:", self)
-        self.maxFLbl.setObjectName("-f")
-        self.maxFLbl.stateChanged.connect(self.onChecked)
-
         self.oLabel = QCheckBox("Optimize branch lengths and inheritance probabilities for every proposed species "
                                 "network during the search", self)
         self.registerField("oLabelMPL", self.oLabel)
@@ -633,11 +624,6 @@ class NetworkMPLPage3(QWizardPage):
         self.retDiaEdit.setPlaceholderText("infinity")
         self.registerField("retDiaEditMPL", self.retDiaEdit)        
 
-        self.maxFEdit = QLineEdit()
-        self.maxFEdit.setDisabled(True)
-        self.maxFEdit.setPlaceholderText("100")
-        self.registerField("maxFEditMPL", self.maxFEdit)
-
         self.stopCriterionEdit = QLineEdit()
         self.stopCriterionEdit.setDisabled(True)
         self.stopCriterionEdit.setPlaceholderText("(0.01, 0.001)")
@@ -660,11 +646,6 @@ class NetworkMPLPage3(QWizardPage):
         retDiaLayout.addStretch(1)
         retDiaLayout.addWidget(self.retDiaEdit)
 
-        maxFLayout = QHBoxLayout()
-        maxFLayout.addWidget(self.maxFLbl)
-        maxFLayout.addStretch(1)
-        maxFLayout.addWidget(self.maxFEdit)
-
         oLayout = QHBoxLayout()
         oLayout.addWidget(self.oLabel)
 
@@ -683,7 +664,6 @@ class NetworkMPLPage3(QWizardPage):
         topLevelLayout.addLayout(nNetExamLayout)
         topLevelLayout.addLayout(maxDiaLayout)
         topLevelLayout.addLayout(retDiaLayout)
-        topLevelLayout.addLayout(maxFLayout)
         topLevelLayout.addLayout(oLayout)
         topLevelLayout.addLayout(poLayout)
         topLevelLayout.addLayout(stopCriterionLayout)
@@ -765,11 +745,6 @@ class NetworkMPLPage3(QWizardPage):
                 self.retDiaEdit.setDisabled(True)
             else:
                 self.retDiaEdit.setDisabled(False)
-        elif self.sender().objectName() == "-f":
-            if self.maxFEdit.isEnabled():
-                self.maxFEdit.setDisabled(True)
-            else:
-                self.maxFEdit.setDisabled(False)
         elif self.sender().objectName() == "-p":
             if self.stopCriterionEdit.isEnabled():
                 self.stopCriterionEdit.setDisabled(True)
@@ -819,8 +794,6 @@ class NetworkMPLPage3(QWizardPage):
         self.maxDiaEdit.clear()
         self.retDiaLbl.setChecked(False)
         self.retDiaEdit.clear()
-        self.maxFLbl.setChecked(False)
-        self.maxFEdit.clear()
         self.oLabel.setChecked(False)
         self.poLabel.setChecked(False)
         self.stopCriterionLbl.setChecked(False)
@@ -840,7 +813,6 @@ class NetworkMPLPage4(QWizardPage):
         self.numRunEdit = self.field("numRunEditMPL")
         self.nNetExamEdit = self.field("nNetExamEditMPL")
         self.maxDiaEdit = self.field("maxDiaEditMPL")
-        self.maxFEdit = self.field("maxFEditMPL")
         self.retDiaEdit = self.field("retDiaEditMPL")
         self.stopCriterionEdit = self.field("stopCriterionEditMPL")
         self.oLabel = self.field("oLabelMPL")
@@ -1045,11 +1017,6 @@ class NetworkMPLPage4(QWizardPage):
                 self.retDiaEdit.setDisabled(True)
             else:
                 self.retDiaEdit.setDisabled(False)
-        elif self.sender().objectName() == "-f":
-            if self.maxFEdit.isEnabled():
-                self.maxFEdit.setDisabled(True)
-            else:
-                self.maxFEdit.setDisabled(False)
         elif self.sender().objectName() == "-p":
             if self.stopCriterionEdit.isEnabled():
                 self.stopCriterionEdit.setDisabled(True)
@@ -1322,15 +1289,6 @@ class NetworkMPLPage4(QWizardPage):
                     outputFile.write(self.retDiaEdit)
                     #clear text
                     self.retDiaEdit = ""
-
-                # -f maxFailure command
-                if self.maxFEdit == "":
-                    pass
-                else:
-                    outputFile.write(" -f ")
-                    outputFile.write(self.maxFEdit)
-                    #clear text
-                    self.maxFEdit = ""
 
                 # -o command
                 if self.oLabel:

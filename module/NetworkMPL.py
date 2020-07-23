@@ -2,7 +2,9 @@ import sys
 import os
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
-from PyQt5 import QtCore
+from PyQt5 import QtWidgets, QtCore
+from PyQt5.QtCore import Qt, pyqtSignal, pyqtSlot
+from PyQt5.QtGui import QIcon, QPixmap
 import dendropy
 import datetime
 import subprocess
@@ -20,8 +22,7 @@ def resource_path(relative_path):
     Refer to the location of a file at run-time.
     This function is from
     https://www.reddit.com/r/learnpython/comments/4kjie3/how_to_include_gui_images_with_pyinstaller/
-    # run-time-information
-    For more information, visit https://pythonhosted.org/PyInstaller/runtime-information.html
+    For more information, visit https://pythonhosted.org/PyInstaller/runtime-information.html#run-time-information
     """
     if hasattr(sys, '_MEIPASS'):
         return os.path.join(sys._MEIPASS, relative_path)
@@ -47,7 +48,7 @@ class NetworkMPLPage(QWizardPage):
 
         hyperlink = QLabel()
         hyperlink.setText('Details of this method can be found '
-                          '<a href="https://wiki.rice.edu/confluence/display/PHYLONET/InferNetwork_ML">'
+                          '<a href="https://wiki.rice.edu/confluence/display/PHYLONET/InferNetwork_MPL">'
                           'here</a>.')
         hyperlink.linkActivated.connect(self.link)
         hyperlink.setObjectName("detailsLink")
@@ -154,6 +155,15 @@ class NetworkMPLPage(QWizardPage):
             else:
                 self.nexus.setChecked(False)
                 self.newick.setChecked(True)
+    
+    def clear(self):
+        """
+        Clears page's fields
+        """
+        self.geneTreesEditMPL.clear()
+        self.numReticulationsEditMPL.clear()
+        self.nexus.setChecked(False)
+        self.newick.setChecked(False)
 
     def selectFile(self):
         """
@@ -216,7 +226,7 @@ class NetworkMPLPage2(QWizardPage):
         """
         Initialize GUI.
         """
-        # Title (InferNetwork_ML)
+        # Title (InferNetwork_MPL)
         titleLabel = titleHeader("InferNetwork_MPL")
 
         hyperlink = QLabel()
@@ -267,7 +277,7 @@ class NetworkMPLPage2(QWizardPage):
         self.taxamapEdit = QPushButton("Set taxa map")
         self.taxamapEdit.setDisabled(True)
         self.taxamapEdit.clicked.connect(self.getTaxamap)
-        self.taxamapEdit.setObjectName("taxamapEdit")
+        self.taxamapEdit.setObjectName("taxamapEditMPL")
 
         self.sNetEdit = QLineEdit()
         self.sNetEdit.setDisabled(True)
@@ -430,7 +440,7 @@ class NetworkMPLPage2(QWizardPage):
             if self.retDiaEdit.isEnabled():
                 self.retDiaEdit.setDisabled(True)
             else:
-                self.retDiaEdit.setDisabled(False)
+                self.retDiaEdit.setDisabled(False)               
         elif self.sender().objectName() == "-f":
             if self.maxFEdit.isEnabled():
                 self.maxFEdit.setDisabled(True)
@@ -526,6 +536,7 @@ class NetworkMPLPage2(QWizardPage):
                 self.taxamap = dialog.getTaxamap()
             #Update global attribute
             taxamap = self.taxamap
+
         except emptyFileError:
             QMessageBox.warning(self, "Warning", "Please select a file type and upload data!", QMessageBox.Ok)
             return
@@ -533,8 +544,26 @@ class NetworkMPLPage2(QWizardPage):
             QMessageBox.warning(self, "Warning", str(e), QMessageBox.Ok)
             return
 
-class NetworkMPLPage3(QWizardPage):
+    def clear(self):
+        """
+        Clears page's fields
+        """
+        self.thresholdLbl.setChecked(False)
+        self.thresholdEdit.clear()
+        self.taxamapLbl.setChecked(False)
+        self.taxamapEdit.setDisabled(True)
+        self.sNetLbl.setChecked(False)
+        self.sNetEdit.clear()
+        self.nNetRetLbl.setChecked(False)
+        self.nNetRetEdit.clear()
+        self.hybridLbl.setChecked(False)
+        self.hybridEdit.clear()
+        self.wetOpLbl.setChecked(False)
+        self.wetOpEdit.clear()
+        self.numRunLbl.setChecked(False)
+        self.numRunEdit.clear()
 
+class NetworkMPLPage3(QWizardPage):
     def __init__(self):
         super(NetworkMPLPage3, self).__init__()
 
@@ -647,7 +676,6 @@ class NetworkMPLPage3(QWizardPage):
         stopCriterionLayout.addStretch(1)
         stopCriterionLayout.addWidget(self.stopCriterionEdit)
 
-
         # Main layout
         topLevelLayout = QVBoxLayout()
         topLevelLayout.addWidget(titleLabel)
@@ -659,7 +687,6 @@ class NetworkMPLPage3(QWizardPage):
         topLevelLayout.addLayout(oLayout)
         topLevelLayout.addLayout(poLayout)
         topLevelLayout.addLayout(stopCriterionLayout)
-
         self.setLayout(topLevelLayout)
 
     def aboutMessage(self):
@@ -782,8 +809,25 @@ class NetworkMPLPage3(QWizardPage):
         """
         QDesktopServices.openUrl(QtCore.QUrl(linkStr))
 
+    def clear(self):
+        """
+        Clears page's fields
+        """
+        self.nNetExamLbl.setChecked(False)
+        self.nNetExamEdit.clear()
+        self.maxDiaLbl.setChecked(False)
+        self.maxDiaEdit.clear()
+        self.retDiaLbl.setChecked(False)
+        self.retDiaEdit.clear()
+        self.maxFLbl.setChecked(False)
+        self.maxFEdit.clear()
+        self.oLabel.setChecked(False)
+        self.poLabel.setChecked(False)
+        self.stopCriterionLbl.setChecked(False)
+        self.stopCriterionEdit.clear()
 
 class NetworkMPLPage4(QWizardPage):
+    isGenerated = pyqtSignal(bool)
     def initializePage(self):
         self.fileType = self.field("fileTypeMPL")
         self.geneTreesEditMPL = self.field("geneTreesEditMPL")
@@ -794,7 +838,6 @@ class NetworkMPLPage4(QWizardPage):
         self.hybridEdit = self.field("hybridEditMPL")
         self.wetOpEdit = self.field("wetOpEditMPL")
         self.numRunEdit = self.field("numRunEditMPL")
-
         self.nNetExamEdit = self.field("nNetExamEditMPL")
         self.maxDiaEdit = self.field("maxDiaEditMPL")
         self.maxFEdit = self.field("maxFEditMPL")
@@ -802,7 +845,6 @@ class NetworkMPLPage4(QWizardPage):
         self.stopCriterionEdit = self.field("stopCriterionEditMPL")
         self.oLabel = self.field("oLabelMPL")
         self.poLabel = self.field("poLabelMPL")
-
     def __init__(self):
         super(NetworkMPLPage4, self).__init__()
 
@@ -857,27 +899,22 @@ class NetworkMPLPage4(QWizardPage):
         self.maxRoundEdit = QLineEdit()
         self.maxRoundEdit.setDisabled(True)
         self.maxRoundEdit.setPlaceholderText("100")
-        #self.registerField("maxRoundEdit", self.maxRoundEdit)
 
         self.maxTryPerBrEdit = QLineEdit()
         self.maxTryPerBrEdit.setDisabled(True)
         self.maxTryPerBrEdit.setPlaceholderText("100")
-        #self.registerField("maxTryPerBrEdit", self.maxTryPerBrEdit)
 
         self.improveThresEdit = QLineEdit()
         self.improveThresEdit.setDisabled(True)
         self.improveThresEdit.setPlaceholderText("0.001")
-        #self.registerField("improveThresEdit", self.improveThresEdit)
 
         self.maxBlEdit = QLineEdit()
         self.maxBlEdit.setDisabled(True)
         self.maxBlEdit.setPlaceholderText("6")
-        #self.registerField("maxBlEdit", self.maxBlEdit)
 
         self.numProcEdit = QLineEdit()
         self.numProcEdit.setDisabled(True)
         self.numProcEdit.setPlaceholderText("1")
-        #self.registerField("numProcEdit", self.numProcEdit)
 
         # Launch button
         launchBtn = QPushButton("Generate", self)
@@ -1070,6 +1107,7 @@ class NetworkMPLPage4(QWizardPage):
         #update shared attributes
         self.inputFiles = inputFiles
         self.taxamap = taxamap
+       
         directory = QFileDialog.getSaveFileName(self, "Save File", "/", "Nexus Files (*.nexus)")
 
         class emptyFileError(Exception):
@@ -1090,7 +1128,6 @@ class NetworkMPLPage4(QWizardPage):
                 raise emptyDesinationError
 
             # the file format to read
-
             if self.fileType == 'Nexus files (*.nexus *.nex)':
                 schema = "nexus"
             else:
@@ -1337,7 +1374,7 @@ class NetworkMPLPage4(QWizardPage):
                         outputFile.write(str(self.maxTryPerBrEdit.text()))
                         #clear text
                         self.maxTryPerBrEdit.clear()
-                    #clear checkbox
+                    #clear field
                     self.maxTryPerBrLbl.setChecked(False)
 
                 # -i command
@@ -1360,7 +1397,7 @@ class NetworkMPLPage4(QWizardPage):
                         outputFile.write(" -l ")
                         outputFile.write(str(self.maxBlEdit.text()))
                         #clear text
-                        self.maxBlEdit.clear
+                        self.maxBlEdit.clear()
                     #clear checkbox
                     self.maxBlLbl.setChecked(False)
 
@@ -1391,8 +1428,9 @@ class NetworkMPLPage4(QWizardPage):
             self.taxamap = {}
             self.geneTreesEditMPL = ""
             self.multiTreesPerLocus = False
-            self.successMessage()
+            self.isGenerated.emit(True)
 
+            self.successMessage()
             # Validate the generated file.
             self.validateFile(path)
 
@@ -1442,14 +1480,13 @@ class NetworkMPLPage4(QWizardPage):
         """
         After the .nexus file is generated, validate the file by feeding it to PhyloNet.
         Specify -checkParams on command line to make sure PhyloNet checks input without executing the command.
-        """  
+        """
         try:
             subprocess.check_output(
                 ["java", "-jar", resource_path("module/testphylonet.jar"),
                  filePath, "checkParams"], stderr=subprocess.STDOUT)
         except subprocess.CalledProcessError as e:
             # If an error is encountered, delete the generated file and display the error to user.
-            print("Error generated by validatefile")
             os.remove(filePath)
             QMessageBox.warning(self, "Warning", e.output, QMessageBox.Ok)
 

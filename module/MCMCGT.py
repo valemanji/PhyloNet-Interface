@@ -2,7 +2,9 @@ import sys
 import os
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
-from PyQt5 import QtCore
+from PyQt5 import QtWidgets, QtCore
+from PyQt5.QtCore import Qt, pyqtSignal, pyqtSlot
+from PyQt5.QtGui import QIcon, QPixmap
 import dendropy
 import datetime
 import subprocess
@@ -145,6 +147,14 @@ class MCMCGTPage(QWizardPage):
             else:
                 self.nexus.setChecked(False)
                 self.newick.setChecked(True)
+    
+    def clear(self):
+        """
+        Clears page's fields
+        """
+        self.geneTreesEditMCGT.clear()
+        self.nexus.setChecked(False)
+        self.newick.setChecked(False)
 
     def selectFile(self):
         """
@@ -391,8 +401,25 @@ class MCMCGTPage2(QWizardPage):
         else:
             pass
 
+    def clear(self):
+        """
+        Clears page's fields
+        """
+        self.chainLengthLbl.setChecked(False)
+        self.chainLengthEdit.clear()
+        self.sampleFrequencyLbl.setChecked(False)
+        self.sampleFrequencyEdit.clear()
+        self.burnInLengthLbl.setChecked(False)
+        self.burnInLengthEdit.clear()
+        self.seedLbl.setChecked(False)
+        self.seedEdit.clear()
+        self.ppLbl.setChecked(False)
+        self.ppEdit.clear()
+        self.maxRetLbl.setChecked(False)
+        self.maxRetEdit.clear()
 
 class MCMCGTPage3(QWizardPage):
+    isGenerated = pyqtSignal(bool)
     def initializePage(self):
         self.fileType = self.field("fileTypeMCGT")
         self.geneTreesEditMCGT = self.field("geneTreesEditMCGT")
@@ -509,7 +536,7 @@ class MCMCGTPage3(QWizardPage):
         topLevelLayout = QVBoxLayout()
         topLevelLayout.addWidget(titleLabel)
         topLevelLayout.addWidget(hyperlink)
-        #topLevelLayout.addWidget(optionalLabel)
+        topLevelLayout.addWidget(optionalLabel)
 
         topLevelLayout.addLayout(numProcLayout)
         topLevelLayout.addLayout(tempListLayout)
@@ -899,6 +926,7 @@ class MCMCGTPage3(QWizardPage):
             self.geneTreesEditMCGT = ""
             self.multiTreesPerLocus = False
             self.successMessage()
+            self.isGenerated.emit(True)
 
             # Validate the generated file.
             self.validateFile(path)
@@ -917,6 +945,21 @@ class MCMCGTPage3(QWizardPage):
             self.multiTreesPerLocus = False
             QMessageBox.warning(self, "Warning", str(e), QMessageBox.Ok)
             return
+
+    def clear(self):
+        """
+        Clears page's fields
+        """
+        self.numProcLbl.setChecked(False)
+        self.numProcEdit.clear()
+        self.tempListLbl.setChecked(False)
+        self.tempListEdit.clear()
+        self.sNetListLbl.setChecked(False)
+        self.sNetListEdit.clear()
+        self.taxamapLbl.setChecked(False)
+        self.taxamapEdit.setDisabled(False)
+        self.pseudoLbl.setChecked(False)
+
     def successMessage(self):
         msg = QDialog()
         msg.setStyleSheet("QDialog{min-width: 500px; min-height: 500px;}")

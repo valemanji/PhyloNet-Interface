@@ -2,8 +2,8 @@ import sys
 import os
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
-from PyQt5 import QtWidgets, QtCore, QtLocation
-from PyQt5.QtCore import Qt, pyqtSignal, pyqtSlot, QObject, QTimer, QThread
+from PyQt5 import QtWidgets, QtCore
+from PyQt5.QtCore import Qt, pyqtSignal, pyqtSlot
 from PyQt5.QtGui import QIcon, QPixmap
 import dendropy
 import datetime
@@ -17,7 +17,6 @@ from functions import *
 inputFiles = []
 geneTreeNames = []
 taxamap = {}
-
 
 def resource_path(relative_path):
     """
@@ -34,7 +33,6 @@ def resource_path(relative_path):
 
 class NetworkMPPage(QWizardPage):
     def __init__(self):
-
         super(NetworkMPPage, self).__init__()
 
         self.inputFiles = inputFiles
@@ -46,7 +44,7 @@ class NetworkMPPage(QWizardPage):
     def initUI(self):
         """
         Initialize GUI.
-        """
+        """     
 
         # Title (InferNetwork_MP)
         titleLabel = titleHeader("InferNetwork_MP")
@@ -158,6 +156,9 @@ class NetworkMPPage(QWizardPage):
                 self.newick.setChecked(True)
 
     def clear(self):
+        """
+        Clears page's fields
+        """
         self.geneTreesEditMP.clear()
         self.numReticulationsEditMP.clear()
         self.nexus.setChecked(False)
@@ -204,6 +205,7 @@ class NetworkMPPage(QWizardPage):
                     return
                 #Update global attribute
                 inputFiles = self.inputFiles
+                
 
 class NetworkMPPage2(QWizardPage):
     def initializePage(self):
@@ -439,6 +441,9 @@ class NetworkMPPage2(QWizardPage):
         QDesktopServices.openUrl(QtCore.QUrl(linkStr))
 
     def clear(self):
+        """
+        Clears page's fields
+        """
         self.thresholdLbl.setChecked(False)
         self.thresholdEdit.clear()
         self.taxamapLbl.setChecked(False)
@@ -511,7 +516,7 @@ class NetworkMPPage2(QWizardPage):
 
 
 class NetworkMPPage3(QWizardPage):
-
+    isGenerated = pyqtSignal(bool)
     def initializePage(self):
         self.geneTreesEditMP = self.field("geneTreesEditMP")
         self.numReticulationsEditMP = self.field("numReticulationsEditMP")
@@ -529,7 +534,6 @@ class NetworkMPPage3(QWizardPage):
         self.inputFiles = inputFiles
         self.geneTreeNames = geneTreeNames
         self.taxamap = taxamap
-        #self.isComplete = False
 
         self.initUI()
 
@@ -537,7 +541,6 @@ class NetworkMPPage3(QWizardPage):
         """
         Initialize GUI.
         """
-        #isComplete = QtCore.pyqtSignal(bool)
         # Title (InferNetwork_MP)
         titleLabel = titleHeader("InferNetwork_MP")
 
@@ -994,9 +997,7 @@ class NetworkMPPage3(QWizardPage):
             self.inputFiles = []
             self.taxamap = {}
             self.geneTreesEditMP = ""
-            #self.isComplete = True
-            #self.isComplete.emit(True)
-
+            self.isGenerated.emit(True)
             self.successMessage()
             # Validate the generated file.
             self.validateFile(path)
@@ -1057,7 +1058,7 @@ class NetworkMPPage3(QWizardPage):
                  filePath, "checkParams"], stderr=subprocess.STDOUT)
         except subprocess.CalledProcessError as e:
             # If an error is encountered, delete the generated file and display the error to user.
-           # os.remove(filePath)
+            os.remove(filePath)
             QMessageBox.warning(self, "Warning", e.output, QMessageBox.Ok)
 
 

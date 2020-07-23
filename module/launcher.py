@@ -119,15 +119,44 @@ class Launcher(QtWidgets.QWizard):
         self.setWindowFlags(flags)
         self.setModal(1)
 
-        print("What response", self.NetworkMP3.isComplete)
+        #check whether files have been generated
+        #if so clear the respective section
+        #self.DirectInf4.isGenerated.connect(lambda parameter_list: expression)
+        self.NetworkMP3.isGenerated.connect(lambda : self.clearNetworkMP())
+        self.NetworkML4.isGenerated.connect(lambda : self.clearNetworkML())
+        self.NetworkMPL4.isGenerated.connect(lambda : self.clearNetworkMPL())
+        self.MCMCGT3.isGenerated.connect(lambda : self.clearMCMCGT())
 
-        #self.NetworkMP3.isComplete.connect(lambda: print(self.NetworkMP3.isComplete))
-        #print(self.NetworkMP3.isComplete)
-        #NetworkMP.NetworkMPPage3().isComplete.connect(lambda: self.clearMP)
-
-    def clearMP(self):
+    def clearNetworkMP(self):
+        """
+        Clears all pages of NetworkMP function
+        """
+        #print("response")
         self.NetworkMP.clear()
         self.NetworkMP2.clear()
+
+    def clearMCMCGT(self):
+        """
+        Clears all pages of MCMGT function
+        """
+        self.MCMCGT.clear()
+        self.MCMCGT2.clear()
+
+    def clearNetworkML(self):
+        """
+        Clears all pages of NetworkML function
+        """
+        self.NetworkML.clear()
+        self.NetworkML2.clear()
+        self.NetworkML3.clear()
+
+    def clearNetworkMPL(self):
+        """
+        Clears all pages of NetworkMPL function
+        """
+        self.NetworkMPL.clear()
+        self.NetworkMPL2.clear()
+        self.NetworkMPL3.clear()
 
     def nextId(self):
         id = self.currentId()

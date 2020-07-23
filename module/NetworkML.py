@@ -2,7 +2,9 @@ import sys
 import os
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
-from PyQt5 import QtCore
+from PyQt5 import QtWidgets, QtCore
+from PyQt5.QtCore import Qt, pyqtSignal, pyqtSlot
+from PyQt5.QtGui import QIcon, QPixmap
 import dendropy
 import datetime
 import subprocess
@@ -153,6 +155,15 @@ class NetworkMLPage(QWizardPage):
             else:
                 self.nexus.setChecked(False)
                 self.newick.setChecked(True)
+    
+    def clear(self):
+        """
+        Clears page's fields
+        """
+        self.geneTreesEditML.clear()
+        self.numReticulationsEditML.clear()
+        self.nexus.setChecked(False)
+        self.newick.setChecked(False)
 
     def selectFile(self):
         """
@@ -541,6 +552,26 @@ class NetworkMLPage2(QWizardPage):
             QMessageBox.warning(self, "Warning", str(e), QMessageBox.Ok)
             return
 
+    def clear(self):
+        """
+        Clears page's fields
+        """
+        self.thresholdLbl.setChecked(False)
+        self.thresholdEdit.clear()
+        self.taxamapLbl.setChecked(False)
+        self.taxamapEdit.setDisabled(True)
+        self.branchlengthLbl.setChecked(False)
+        self.sNetLbl.setChecked(False)
+        self.sNetEdit.clear()
+        self.nNetRetLbl.setChecked(False)
+        self.nNetRetEdit.clear()
+        self.hybridLbl.setChecked(False)
+        self.hybridEdit.clear()
+        self.wetOpLbl.setChecked(False)
+        self.wetOpEdit.clear()
+        self.numRunLbl.setChecked(False)
+        self.numRunEdit.clear()
+
 class NetworkMLPage3(QWizardPage):
     def __init__(self):
         super(NetworkMLPage3, self).__init__()
@@ -787,8 +818,25 @@ class NetworkMLPage3(QWizardPage):
         """
         QDesktopServices.openUrl(QtCore.QUrl(linkStr))
 
+    def clear(self):
+        """
+        Clears page's fields
+        """
+        self.nNetExamLbl.setChecked(False)
+        self.nNetExamEdit.clear()
+        self.maxDiaLbl.setChecked(False)
+        self.maxDiaEdit.clear()
+        self.retDiaLbl.setChecked(False)
+        self.retDiaEdit.clear()
+        self.maxFLbl.setChecked(False)
+        self.maxFEdit.clear()
+        self.oLabel.setChecked(False)
+        self.poLabel.setChecked(False)
+        self.stopCriterionLbl.setChecked(False)
+        self.stopCriterionEdit.clear()
 
 class NetworkMLPage4(QWizardPage):
+    isGenerated = pyqtSignal(bool)
     def initializePage(self):
         self.fileType = self.field("fileTypeML")
         self.geneTreesEditML = self.field("geneTreesEditML")
@@ -1355,7 +1403,7 @@ class NetworkMLPage4(QWizardPage):
                         outputFile.write(" -i ")
                         outputFile.write(str(self.improveThresEdit.text()))
                         #clear text
-                        self.improveThresEdit.clear
+                        self.improveThresEdit.clear()
                     #clear checkbox
                     self.improveThresLbl.setChecked(False)
 
@@ -1398,6 +1446,7 @@ class NetworkMLPage4(QWizardPage):
             self.taxamap = {}
             self.geneTreesEditML = ""
             self.multiTreesPerLocus = False
+            self.isGenerated.emit(True)
 
             self.successMessage()
             # Validate the generated file.

@@ -36,23 +36,20 @@ class Main(QMainWindow):
         self.setWindowTitle("Phylonet") 
         self.setWindowIcon(QIcon("logo.png"))
         flags = QtCore.Qt.WindowFlags(QtCore.Qt.CustomizeWindowHint | QtCore.Qt.WindowCloseButtonHint 
-                    | QtCore.Qt.WindowMaximizeButtonHint | QtCore.Qt.WindowMinimizeButtonHint)
+                     | QtCore.Qt.WindowMinimizeButtonHint)
         #flags =  QtCore.Qt.WindowFlags(QtCore.Qt.FramelessWindowHint | QtCore.Qt.CustomizeWindowHint)
         self.setWindowFlags(flags)
 
         wid = QWidget()
         self.setCentralWidget(wid)
-        self.setContentsMargins(100, 0, 100, 80)
+        self.setContentsMargins(50, 0, 10, 50)
         ico = QIcon("info.svg")
 
         infoButton = QPushButton(self)
-
-        #infoButton.setObjectName("infoButton")
         infoButton.clicked.connect(self.aboutMessage)
         infoButton.setIcon(ico)
-        infoButton.setFixedSize(48, 48)
+        infoButton.setFixedSize(60, 60)
         infoButton.setIconSize(infoButton.size())
-
         infoButton.setStyleSheet("border: none;") 
 
         # Buttons of two options
@@ -66,41 +63,38 @@ class Main(QMainWindow):
         generateBtn.clicked.connect(self.openModule)
         postProcessBtn.clicked.connect(self.openPostProcess)
 
-
         # Question
-        questionLabel = QLabel()
-        questionLabel.setObjectName("questionLabel")
-        questionLabel.setText(
-            "What would you like to do?")
+        header = QLabel()
+        header.setStyleSheet("margin-bottom: 50px;")
+        pix = QPixmap("header.png")
+        pix = pix.scaledToWidth(500)
+        header.setPixmap(pix)
 
-        # Bottom level options
-        #this is deceptive, it's no longer horizontal
-        hbox = QVBoxLayout()
-        hbox.addWidget(generateBtn, alignment=QtCore.Qt.AlignCenter)
-        hbox.addWidget(postProcessBtn, alignment=QtCore.Qt.AlignCenter)
+        questionLabel = QLabel("What would you like to do?")
+        questionLabel.setObjectName("introQuestion")
 
-        # Main vertical layout.
+        version = QLabel("Version 1.0")
+        version.setObjectName("version")
+
+        # main layout
+        mainLayout = QVBoxLayout()
+        mainLayout.addWidget(header, alignment=QtCore.Qt.AlignCenter)
+        mainLayout.addWidget(questionLabel, alignment=QtCore.Qt.AlignCenter)
+        mainLayout.addWidget(generateBtn, alignment=QtCore.Qt.AlignCenter)
+        mainLayout.addWidget(postProcessBtn, alignment=QtCore.Qt.AlignCenter)
+        mainLayout.setContentsMargins(250, 20,250,10)
+
+        #houses all widgets
         vbox = QVBoxLayout()
-        #info button gotta go
-        #vbox.addWidget(getInfoButton(self))
-        vbox.addWidget(infoButton, alignment=QtCore.Qt.AlignRight)
-        vbox.addWidget(questionLabel)
-        vbox.addLayout(hbox)
+        vbox.addWidget(infoButton)
+        vbox.addLayout(mainLayout)
+        vbox.addWidget(version, alignment=QtCore.Qt.AlignCenter)
         wid.setLayout(vbox)
 
-        #vbox.setContentsMargins(50, 80, 50, 50)
 
         # menubar.setNativeMenuBar(False)
         #self.setWindowTitle('PhyloNetCompanion')
         #self.setWindowIcon(QIcon(resource_path("logo.png")))
-
-        #size fluidity
-        #sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Expanding)
-        #sizePolicy.setHorizontalStretch(1)
-        #sizePolicy.setVerticalStretch(1)
-        #sizePolicy.setHeightForWidth(self.sizePolicy().hasHeightForWidth())
-        #self.setSizePolicy(sizePolicy)
-
     
     def link(self, linkStr):
         """

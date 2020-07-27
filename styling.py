@@ -4,7 +4,7 @@ def style():
     return """
         QMainWindow{
             background-color: white;
-            font-family: "Franklin Gothic Medium", "Arial", Sans-serif;
+            font-family:  "Franklin Gothic Medium", "Arial", Sans-serif;
             padding: 30px 50px 30px 30px;
         }
         QDialog{
@@ -20,9 +20,13 @@ def style():
             height: 100%;
             font-size: 12pt;
         }
+        QDialog#successMessage{
+            min-height: 500px;
+            min-width: 500px;
+        }
         QWizard{
             background-color: white;
-            font-family: "Franklin Gothic Medium", "Arial", Sans-serif;
+            font-family:  "Franklin Gothic Medium", "Arial", Sans-serif;
         }
         QWizardPage{
             background-color: white;
@@ -31,7 +35,7 @@ def style():
             font-family: "Franklin Gothic Medium", "Arial", Sans-serif;
         }
         QWidget{
-            font-family: "Franklin Gothic Medium", "Arial", Sans-serif;            
+            font-family:  "Franklin Gothic Medium", "Arial", Sans-serif;            
         }
         QTableWidget{
             min-width: 1000px;
@@ -80,16 +84,26 @@ def style():
             height: 16px;
             width: 16px;
         }
+        QLabel#version{
+            margin-top: 20px; 
+            font-size: 10pt;
+            color: black;
+        }
+        QLabel#introQuestion{
+            font-size: 13pt; 
+            color: #666;
+        }
         QLabel#instructionLabel{
             font-size: 11pt;
             color: #2196f3;
         }
         QLabel#phylonetLabel{
             color: Black;
-            font-size : 48px;
-            font-weight: 400;
-
-            margin: 30px;
+            font-size : 30pt;
+            font-weight: 600;
+            font-family: "Franklin Gothic Medium", Arial;
+            min-width: 700px;
+            border: 2px solid;
         }
         QLabel#detailsLink{
             border-bottom: 2px solid #ccc;
@@ -106,16 +120,25 @@ def style():
             color: Black;
             padding: 10px;
         }
+        QLabel#introLabel{
+            font-size: 23pt;
+            qproperty-alignment: AlignCenter;
+            color: Black;
+
+            width: 100%;
+            margin-bottom: 15px;
+            margin-top: 10px;
+            font-weight: 600;
+            font-family: "Franklin Gothic Medium", "Franklin Gothic Heavy", "Franklin Gothic Medium", "Arial", Sans-serif;
+        }
         QLabel#questionLabel{            
             font-size: 20pt;
             qproperty-alignment: AlignCenter;
             color: Black;
 
             width: 100%;
-            padding: 20px;
-            padding-bottom: 30px;
-            font-weight: 900;
-            font-family: "Franklin Gothic Heavy", "Franklin Gothic Medium", "Arial", Sans-serif;
+            font-weight: 600;
+            font-family: "Segoe UI","Franklin Gothic Heavy", "Franklin Gothic Medium", "Arial", Sans-serif;
         }
         QPushButton{
             font-size: 10pt;

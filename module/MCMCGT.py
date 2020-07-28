@@ -440,6 +440,7 @@ class MCMCGTPage3(QWizardPage):
         self.taxamap = {}
         self.multiTreesPerLocus = False
 
+        self.isValidated = False
         self.initUI()
 
     def initUI(self):
@@ -922,16 +923,17 @@ class MCMCGTPage3(QWizardPage):
                 outputFile.write(";\n\n")
                 outputFile.write("END;")
 
-            self.geneTreeNames = []
-            self.inputFiles = []
-            self.taxamap = {}
-            self.geneTreesEditMCGT = ""
-            self.multiTreesPerLocus = False
-            self.successMessage()
-            self.isGenerated.emit(True)
-
             # Validate the generated file.
             self.validateFile(path)
+            #clears inputs if they are validated    
+            if self.isValidated:
+                self.geneTreeNames = []
+                self.inputFiles = []
+                self.taxamap = {}
+                self.geneTreesEditMCGT = ""
+                self.multiTreesPerLocus = False
+                self.successMessage()
+                self.isGenerated.emit(True)
 
         except emptyFileError:
             QMessageBox.warning(self, "Warning", "Please select a file type and upload data!", QMessageBox.Ok)
@@ -940,11 +942,6 @@ class MCMCGTPage3(QWizardPage):
             QMessageBox.warning(self, "Warning", "Please specify destination for generated NEXUS file.", QMessageBox.Ok)
             return
         except Exception as e:
-            self.geneTreeNames = []
-            self.inputFiles = []
-            self.taxamap = {}
-            self.geneTreesEditMCGT = ""
-            self.multiTreesPerLocus = False
             QMessageBox.warning(self, "Warning", str(e), QMessageBox.Ok)
             return
 
@@ -986,19 +983,28 @@ class MCMCGTPage3(QWizardPage):
         msg.setLayout(vbox)
         msg.setModal(1)
         msg.exec_()
+
     def validateFile(self, filePath):
         """
         After the .nexus file is generated, validate the file by feeding it to PhyloNet.
         Specify -checkParams on command line to make sure PhyloNet checks input without executing the command.
         """
+  
         try:
             subprocess.check_output(
                 ["java", "-jar", resource_path("module/testphylonet.jar"),
                  filePath, "checkParams"], stderr=subprocess.STDOUT)
+            self.isValidated = True
         except subprocess.CalledProcessError as e:
             # If an error is encountered, delete the generated file and display the error to user.
+            self.isValidated = False
+            error_msg = str(e.output)
+            strip_index = error_msg.index(":") + 1
+            #remove string quotes and spacing 
+            msg = error_msg[strip_index + 1:-2]
             os.remove(filePath)
-            QMessageBox.warning(self, "Warning", e.output, QMessageBox.Ok)
+            QMessageBox.warning(self, "Warning", msg, QMessageBox.Ok)
+
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     ex = MCMCGTPage()

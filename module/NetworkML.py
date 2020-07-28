@@ -871,6 +871,7 @@ class NetworkMLPage4(QWizardPage):
         self.geneTreeNames = geneTreesNames
         self.taxamap = taxamap
         self.multiTreesPerLocus = False
+        self.isValidated = False
 
         self.initUI()
 
@@ -1450,17 +1451,18 @@ class NetworkMLPage4(QWizardPage):
                 outputFile.write(";\n\n")
                 outputFile.write("END;")
 
-            self.geneTreeNames = []
-            self.inputFiles = []
-            self.taxamap = {}
-            self.geneTreesEditML = ""
-            self.multiTreesPerLocus = False
-            self.isGenerated.emit(True)
-
-            self.successMessage()
             # Validate the generated file.
             self.validateFile(path)
-
+            #clear inputs if they are validated
+            if self.isValidated:
+                self.geneTreeNames = []
+                self.inputFiles = []
+                self.taxamap = {}
+                self.geneTreesEditML = ""
+                self.multiTreesPerLocus = False
+                self.isGenerated.emit(True)
+                self.successMessage()
+            
         except emptyFileError:
             QMessageBox.warning(self, "Warning", "Please select a file type and upload data!", QMessageBox.Ok)
             return
@@ -1471,11 +1473,6 @@ class NetworkMLPage4(QWizardPage):
             QMessageBox.warning(self, "Warning", "Please specify destination for generated NEXUS file.", QMessageBox.Ok)
             return
         except Exception as e:
-            self.geneTreeNames = []
-            self.inputFiles = []
-            self.taxamap = {}
-            self.geneTreesEditML = ""
-            self.multiTreesPerLocus = False
             QMessageBox.warning(self, "Warning", str(e), QMessageBox.Ok)
             return
 
@@ -1513,10 +1510,16 @@ class NetworkMLPage4(QWizardPage):
             subprocess.check_output(
                 ["java", "-jar", resource_path("module/testphylonet.jar"),
                  filePath, "checkParams"], stderr=subprocess.STDOUT)
+            self.isValidated = True
         except subprocess.CalledProcessError as e:
             # If an error is encountered, delete the generated file and display the error to user.
+            self.isValidated = False
+            error_msg = str(e.output)
+            strip_index = error_msg.index(":") + 1
+            #remove string quotes and spacing 
+            msg = error_msg[strip_index + 1:-2]
             os.remove(filePath)
-            QMessageBox.warning(self, "Warning", e.output, QMessageBox.Ok)
+            QMessageBox.warning(self, "Warning", msg, QMessageBox.Ok)
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)

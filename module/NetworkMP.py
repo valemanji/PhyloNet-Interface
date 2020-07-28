@@ -1067,13 +1067,11 @@ class NetworkMPPage3(QWizardPage):
         except subprocess.CalledProcessError as e:
             # If an error is encountered, delete the generated file and display the error to user.
             self.isValidated = False
-            error_msg = str(e.output)
-            strip_index = error_msg.index(":") + 1
-            #remove string quotes and spacing 
-            msg = error_msg[strip_index + 1:-2]
+            msg = e.output.decode("utf-8")
+            msg = msg.replace("\n", "", 1)
             os.remove(filePath)
             QMessageBox.warning(self, "Warning", msg, QMessageBox.Ok)
-
+            
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     ex = NetworkMPPage()

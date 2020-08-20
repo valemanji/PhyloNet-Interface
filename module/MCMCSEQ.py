@@ -698,7 +698,7 @@ class MCMCSEQPage3(QWizardPage):
 
 
 class MCMCSEQPage4(QWizardPage):
-    isGenerated = pyqtSignal(bool)
+    #isGenerated = pyqtSignal(bool)
     def initializePage(self):
 
         self.sequenceFileEdit = self.field("sequenceFileEdit")

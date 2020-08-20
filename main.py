@@ -37,7 +37,6 @@ class Main(QMainWindow):
         self.setWindowIcon(QIcon("logo.png"))
         flags = QtCore.Qt.WindowFlags(QtCore.Qt.CustomizeWindowHint | QtCore.Qt.WindowCloseButtonHint 
                      | QtCore.Qt.WindowMinimizeButtonHint)
-        #flags =  QtCore.Qt.WindowFlags(QtCore.Qt.FramelessWindowHint | QtCore.Qt.CustomizeWindowHint)
         self.setWindowFlags(flags)
 
         wid = QWidget()
@@ -50,7 +49,7 @@ class Main(QMainWindow):
         infoButton.setIcon(ico)
         infoButton.setFixedSize(60, 60)
         infoButton.setIconSize(infoButton.size())
-        infoButton.setStyleSheet("border: none;") 
+        infoButton.setObjectName("infoButton")
 
         # Buttons of two options
         generateBtn = QPushButton(
@@ -63,9 +62,9 @@ class Main(QMainWindow):
         generateBtn.clicked.connect(self.openModule)
         postProcessBtn.clicked.connect(self.openPostProcess)
 
+
         # Question
         header = QLabel()
-        header.setStyleSheet("margin-bottom: 50px;")
         pix = QPixmap("header.png")
         pix = pix.scaledToWidth(500)
         header.setPixmap(pix)
@@ -91,10 +90,6 @@ class Main(QMainWindow):
         vbox.addWidget(version, alignment=QtCore.Qt.AlignCenter)
         wid.setLayout(vbox)
 
-
-        # menubar.setNativeMenuBar(False)
-        #self.setWindowTitle('PhyloNetCompanion')
-        #self.setWindowIcon(QIcon(resource_path("logo.png")))
     
     def link(self, linkStr):
         """
@@ -155,6 +150,8 @@ class Main(QMainWindow):
 
 
 if __name__ == '__main__':
+    os.environ['QT_FONT_DPI'] = '192'
+    #QApplication.setAttribute(QtCore.Qt.AA_Use96Dpi)
     app = QtWidgets.QApplication(sys.argv)
     app.setStyleSheet(style())
     ex = Main()

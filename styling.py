@@ -4,42 +4,54 @@ def style():
     return """
         QMainWindow{
             background-color: white;
-            font-family:  "Franklin Gothic Medium", "Arial", Sans-serif;
+            font-family:  "Arial", "Libre Franklin SemiBold", "Arial", Sans-serif;
             padding: 30px 50px 30px 30px;
         }
         QDialog{
             background-color: white;
-
-            min-width: 1300px;
-            min-height: 1200px;
         }
         QDialog#aboutMessage{
             min-width: 500px;
             min-height: 500px;
             width: 100%;
             height: 100%;
-            font-size: 12pt;
+            font-size: 38px;
         }
         QDialog#successMessage{
             min-height: 500px;
             min-width: 500px;
         }
         QWizard{
+            color: black;
             background-color: white;
-            font-family:  "Franklin Gothic Medium", "Arial", Sans-serif;
+            font-family:  "Arial", "Libre Franklin SemiBold", "Arial", Sans-serif;
         }
         QWizardPage{
             background-color: white;
-            width: 100%;
-            height: 100%;
-            font-family: "Franklin Gothic Medium", "Arial", Sans-serif;
+            font-family:  "Arial", "Libre Franklin SemiBold", "Arial", Sans-serif;
         }
         QWidget{
-            font-family:  "Franklin Gothic Medium", "Arial", Sans-serif;            
+            font-family:  "Arial", "Libre Franklin SemiBold", "Arial", Sans-serif;            
         }
         QTableWidget{
             min-width: 1000px;
             min-height: 1200px;
+        }
+        QTabWidget::pane { 
+            border: 0; 
+        }
+        QTabBar::tab{
+            font-size: 22px;
+            padding: 10px 0;  
+            width: 300px; 
+            border-bottom: 2px solid;
+        }
+        QTabWidget QTabBar QToolTip{ 
+            padding: 20px;
+        }    
+        QTabBar::tab:selected{
+            background-color: #aaeeff; 
+            color: white;
         }
         QFrame{
             background-color: white;
@@ -68,10 +80,10 @@ def style():
             margin: 5px;
         }
         QCheckBox{
-            font-size: 10pt;
+            font-size: 26px;
         }
         QLabel{
-            font-size: 10pt;
+            font-size: 26px;
             padding-bottom: 5px;
         }
         QTableWidget, QLabel, QToolButton#outDirBtn{
@@ -86,62 +98,47 @@ def style():
         }
         QLabel#version{
             margin-top: 20px; 
-            font-size: 10pt;
+            font-size: 26px;
             color: black;
+            font-family:  "Arial", "Libre Franklin SemiBold", "Arial", Sans-serif;
         }
         QLabel#introQuestion{
-            font-size: 13pt; 
+            margin-top: 50px;
+            font-size: 35px; 
             color: #666;
         }
         QLabel#instructionLabel{
-            font-size: 11pt;
+            font-size: 34px;
             color: #2196f3;
         }
-        QLabel#phylonetLabel{
-            color: Black;
-            font-size : 30pt;
-            font-weight: 600;
-            font-family: "Franklin Gothic Medium", Arial;
-            min-width: 700px;
-            border: 2px solid;
-        }
         QLabel#detailsLink{
-            border-bottom: 2px solid #ccc;
+            padding-top: 35px;
+            border-bottom: 2px solid;
         }
         QLabel#titleLabel{
-            font-size : 20pt;
-            font-weight: 500;
+            font-size : 50px;
+            font-weight: 800;
+            border-right: 2px solid #ccc;
+            border-bottom: 2px solid;
             color: Black;
-            qproperty-alignment: AlignCenter;
+            qproperty-alignment: AlignRight;
         }
         QLabel#instructionInput, QLabel#instructionMCMC, QLabel#instructionInference, QLabel#instructionPrior, QLabel#instructionLabelStarting{
-            font-size : 18px;
+            font-size : 20px;
             font-weight: 400;
             color: Black;
-            padding: 10px;
-        }
-        QLabel#introLabel{
-            font-size: 23pt;
-            qproperty-alignment: AlignCenter;
-            color: Black;
-
-            width: 100%;
-            margin-bottom: 15px;
-            margin-top: 10px;
-            font-weight: 600;
-            font-family: "Franklin Gothic Medium", "Franklin Gothic Heavy", "Franklin Gothic Medium", "Arial", Sans-serif;
         }
         QLabel#questionLabel{            
-            font-size: 20pt;
+            font-size: 52px;
             qproperty-alignment: AlignCenter;
             color: Black;
 
             width: 100%;
             font-weight: 600;
-            font-family: "Segoe UI","Franklin Gothic Heavy", "Franklin Gothic Medium", "Arial", Sans-serif;
+            font-family: "Arial", "Libre Franklin SemiBold", "Arial", Sans-serif;
         }
         QPushButton{
-            font-size: 10pt;
+            font-size: 26px;
             color: Black;
 
             margin-bottom: 35px;
@@ -165,7 +162,7 @@ def style():
             background-color: #d5f6ff;
         }
         QPushButton#gtrEdit, QPushButton#diploidEdit, QPushButton#taxamapEdit{
-            font-size: 8pt;
+            font-size: 23px;
             padding: 5px;
             text-align: center;
             min-width: 200px;
@@ -173,7 +170,7 @@ def style():
         QPushButton#inputBtn, QPushButton#outputBtn{
             width: 640px;
             padding: 50px 10px;
-            font-size: 35px;
+            font-size: 32px;
             border-color: transparent;
         }
         QPushButton#inputBtn{
@@ -186,20 +183,10 @@ def style():
             border: 5px solid black;
         }
         QPushButton#infoButton{
-            font-size: 24px;
-
-            background-color: #2196f3;
-            color: white;
-            
-            max-height: 50px;
-            max-width: 50px;
-            margin-top: 1em;
-            padding: 1em;
-
-            border-radius: 25px;
+            border: none;
         }
         QPushButton#questionButton{
-            font-size: 24px;
+            font-size: 23px;
             color: Black;
             
             height: 25px;
@@ -210,7 +197,7 @@ def style():
             border-radius: 12.5px;
         }
         QPushButton#cancel, QPushButton#set{
-            font-size: 20px;
+            font-size: 19px;
             color: Black;
 
             max-width: 150px;
@@ -227,10 +214,10 @@ def style():
             color: Black; 
 
             font-family: Arial, Helvetica, sans-serif;
-            font-size: 12pt;
+            font-size: 35px;
         }
         QRadioButton{
-            font-size: 30px;
+            font-size: 29px;
             
             padding: 20px;
             width: 900px;
@@ -239,7 +226,7 @@ def style():
             border-radius: 6px; 
         }
         QToolButton#fileSelctionBtn, QPushButton#launchBtn{
-            font-size: 20px;
+            font-size: 19px;
             color: Black;
 
             width: 1200px; 
